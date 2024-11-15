@@ -38,6 +38,32 @@ public class PreguntaCerrada extends Pregunta {
         this.respuesta = respuesta;
     }
 
+    // Getters
+
+    public Dictionary<Opcion, String> getOpcionA() {
+        return opcionA;
+    }
+
+    public Dictionary<Opcion, String> getOpcionB() {
+        return opcionB;
+    }
+
+    public Dictionary<Opcion, String> getOpcionC() {
+        return opcionC;
+    }
+
+    public Dictionary<Opcion, String> getOpcionD() {
+        return opcionD;
+    }
+
+    public Dictionary<Opcion, String> getRespuesta() {
+        return respuesta;
+    }
+
+    public Dictionary<Opcion, String> getEscogida() {
+        return escogida;
+    }
+
 
     // Método para seleccionar la respuesta del estudiante basado en una opción ("A", "B", "C", "D")
     public void elegirRespuesta(String opcion) {

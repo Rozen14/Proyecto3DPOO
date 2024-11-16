@@ -68,14 +68,44 @@ public class testPreguntaCerrada {
     }
 
     @Test
-    public void testElegirRespuesta() {
+    public void testElegirRespuestaOpcionA() {
         pregunta.elegirRespuesta("A");
         assertEquals(opcionA, pregunta.getEscogida());
     }
 
     @Test
-    public void testElegirRespuestaIncorrecta() {
+    public void testElegirRespuestaOpcionB() {
         pregunta.elegirRespuesta("B");
+        assertEquals(opcionB, pregunta.getEscogida());
+    }
+
+    @Test
+    public void testElegirRespuestaOpcionC() {
+        pregunta.elegirRespuesta("C");
+        assertEquals(opcionC, pregunta.getEscogida());
+    }
+
+    @Test
+    public void testElegirRespuestaOpcionD() {
+        pregunta.elegirRespuesta("D");
+        assertEquals(opcionD, pregunta.getEscogida());
+    }
+
+    @Test
+    public void testElegirRespuestaIncorrectaB() {
+        pregunta.elegirRespuesta("B");
+        assertNotEquals(opcionA, pregunta.getEscogida());
+    }
+
+    @Test
+    public void testElegirRespuestaIncorrectaC() {
+        pregunta.elegirRespuesta("C");
+        assertNotEquals(opcionA, pregunta.getEscogida());
+    }
+
+    @Test
+    public void testElegirRespuestaIncorrectaD() {
+        pregunta.elegirRespuesta("D");
         assertNotEquals(opcionA, pregunta.getEscogida());
     }
 
@@ -100,9 +130,25 @@ public class testPreguntaCerrada {
     }
 
     @Test
-    public void testGetRetroalimentacion() {
+    public void testEsIncorrectaSinSeleccion() {
+        assertFalse(pregunta.esCorrecta());
+    }
+
+    @Test 
+    public void testGetRetroalimentacionCorrecta() {
+        pregunta.elegirRespuesta("A");
+        assertEquals("Respuesta correcta.", pregunta.getRetroalimentacion());
+    }
+
+    @Test
+    public void testGetRetroalimentacionIncorrecta() {
         pregunta.elegirRespuesta("B");
         assertEquals("Respuesta incorrecta. La opción correcta era: Opción A", pregunta.getRetroalimentacion());
+    }
+
+    @Test
+    public void testGetRetroalimentacionSinSeleccion() {
+        assertEquals("No se ha seleccionado ninguna opción.", pregunta.getRetroalimentacion());
     }
 
     @Test

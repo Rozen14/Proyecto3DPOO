@@ -163,11 +163,17 @@ public abstract class Actividad { // Clase abstracta Actividad
             throw new UnsupportedOperationException("No se pueden modificar actividades previas si hay estudiantes inscritos en el Learning Path.");
         } // No se pueden modificar actividades previas si hay estudiantes inscritos en el Learning Path, per las reglas de dominio
 
+        if (actividad == null){
+            throw new IllegalArgumentException("La actividad no puede ser nula.");
+        }
+
+        if (actividadesPreviasSugeridas.contains(actividad)){
+            throw new IllegalArgumentException("Una actividad no puede ser previa de sí misma.");
+        }
         if (tienePermisoModificar(usuario)) { // Solo el creador o un administrador pueden modificar actividades previas sugeridas
-            if (actividad != null && !actividadesPreviasSugeridas.contains(actividad)) { // Si la actividad no es nula y no esta en la lista de actividades previas sugeridas
+             // Si la actividad no es nula y no esta en la lista de actividades previas sugeridas
                 actividadesPreviasSugeridas.add(actividad); // La agregamos
                 System.out.println("Actividad previa sugerida agregada por: " + usuario.getNombre()); // Mensaje de confirmacion
-            }
         } else {
             throw new SecurityException("Solo el creador o un administrador pueden modificar actividades previas sugeridas."); // Mensaje de error si no se tiene permiso
         }

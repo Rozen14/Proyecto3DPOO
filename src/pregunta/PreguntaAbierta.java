@@ -47,4 +47,5 @@ public class PreguntaAbierta extends Pregunta {
     public boolean esCorrecta() {
         return evaluada && esCorrecta;
     }
+
 }

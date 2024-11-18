@@ -167,8 +167,12 @@ public abstract class Actividad { // Clase abstracta Actividad
             throw new IllegalArgumentException("La actividad no puede ser nula.");
         }
 
-        if (actividadesPreviasSugeridas.contains(actividad)){
+        if (this.equals(actividad)){
             throw new IllegalArgumentException("Una actividad no puede ser previa de sí misma.");
+        }
+
+        if (actividadesPreviasSugeridas.contains(actividad)){
+            throw new IllegalArgumentException("La actividad ya está en la lista de actividades previas sugeridas.");
         }
         if (tienePermisoModificar(usuario)) { // Solo el creador o un administrador pueden modificar actividades previas sugeridas
              // Si la actividad no es nula y no esta en la lista de actividades previas sugeridas
@@ -181,45 +185,71 @@ public abstract class Actividad { // Clase abstracta Actividad
 
 
     public void eliminarActividadPreviaSugerida(Actividad actividad, Usuario usuario, LearningPath learningPath) {
-        if (learningPath.verificarSiHayInscritos()) { // No se pueden modificar actividades previas si hay estudiantes inscritos en el Learning Path
-            throw new UnsupportedOperationException("No se pueden modificar actividades previas si hay estudiantes inscritos en el Learning Path."); // Mensaje de error
+        if (learningPath.verificarSiHayInscritos()) {
+            throw new UnsupportedOperationException("No se pueden modificar actividades previas si hay estudiantes inscritos en el Learning Path.");
         }
-
-        if (tienePermisoModificar(usuario)) { // Solo el creador o un administrador pueden modificar actividades previas sugeridas
-            actividadesPreviasSugeridas.remove(actividad); // Eliminar la actividad previa sugerida
-            System.out.println("Actividad previa sugerida eliminada por: " + usuario.getNombre()); // Mensaje de confirmacion
-        } else {
-            throw new SecurityException("Solo el creador o un administrador pueden eliminar actividades previas sugeridas."); // Mensaje de error si no se tiene permiso
+    
+        if (actividad == null) {
+            throw new IllegalArgumentException("La actividad no puede ser nula.");
         }
+    
+        if (!actividadesPreviasSugeridas.contains(actividad)) {
+            throw new IllegalArgumentException("La actividad no está en la lista de actividades previas sugeridas.");
+        }
+    
+        if (!tienePermisoModificar(usuario)) {
+            throw new SecurityException("Solo el creador o un administrador pueden eliminar actividades previas sugeridas.");
+        }
+    
+        actividadesPreviasSugeridas.remove(actividad);
+        System.out.println("Actividad previa sugerida eliminada por: " + usuario.getNombre());
     }
 
-    // Actividades de seguimiento recomendadas
-    public void agregarActividadSeguimiento(Actividad actividad, Usuario usuario, LearningPath learningPath) { // Metodo para agregar una actividad de seguimiento recomendada
-        if (learningPath.verificarSiHayInscritos()) { // No se pueden modificar actividades de seguimiento si hay estudiantes inscritos en el Learning Path
-            throw new UnsupportedOperationException("No se pueden modificar actividades de seguimiento si hay estudiantes inscritos en el Learning Path."); // Mensaje de error
+    public void agregarActividadSeguimiento(Actividad actividad, Usuario usuario, LearningPath learningPath) {
+        if (learningPath.verificarSiHayInscritos()) {
+            throw new UnsupportedOperationException("No se pueden modificar actividades de seguimiento si hay estudiantes inscritos en el Learning Path.");
+        }
+    
+    
+        if (actividad == null) {
+            throw new IllegalArgumentException("La actividad no puede ser nula.");
         }
 
-        if (tienePermisoModificar(usuario)) { // Solo el creador o un administrador pueden modificar actividades de seguimiento
-            if (actividad != null && !actividadesSeguimientoRecomendadas.contains(actividad)) { // Si la actividad no es nula y no esta en la lista de actividades de seguimiento recomendadas
-                actividadesSeguimientoRecomendadas.add(actividad); // La agregamos
-                System.out.println("Actividad de seguimiento recomendada agregada por: " + usuario.getNombre()); // Mensaje de confirmacion
-            }
-        } else { 
-            throw new SecurityException("Solo el creador o un administrador pueden modificar actividades de seguimiento."); // Mensaje de error si no se tiene permiso
+        if (this.equals(actividad)){
+            throw new IllegalArgumentException("Una actividad no puede ser de seguimiento de sí misma.");
         }
+
+        if (actividadesSeguimientoRecomendadas.contains(actividad)) {
+            throw new IllegalArgumentException("La actividad ya está en la lista de actividades de seguimiento recomendadas.");
+        }
+
+        if (!tienePermisoModificar(usuario)) {
+            throw new SecurityException("Solo el creador o un administrador pueden modificar actividades de seguimiento.");
+        }
+
+        actividadesSeguimientoRecomendadas.add(actividad);
+        System.out.println("Actividad de seguimiento recomendada agregada por: " + usuario.getNombre());
     }
 
     public void eliminarActividadSeguimiento(Actividad actividad, Usuario usuario, LearningPath learningPath) {
-        if (learningPath.verificarSiHayInscritos()) { // No se pueden modificar actividades de seguimiento si hay estudiantes inscritos en el Learning Path
-            throw new UnsupportedOperationException("No se pueden modificar actividades de seguimiento si hay estudiantes inscritos en el Learning Path."); // Mensaje de error
+        if (learningPath.verificarSiHayInscritos()) {
+            throw new UnsupportedOperationException("No se pueden modificar actividades de seguimiento si hay estudiantes inscritos en el Learning Path.");
         }
-
-        if (tienePermisoModificar(usuario)) {  
-            actividadesSeguimientoRecomendadas.remove(actividad); 
-            System.out.println("Actividad de seguimiento recomendada eliminada por: " + usuario.getNombre()); // Mensaje de confirmacion
-        } else {
-            throw new SecurityException("Solo el creador o un administrador pueden eliminar actividades de seguimiento."); // Mensaje de error si no se tiene permiso
+    
+        if (actividad == null) {
+            throw new IllegalArgumentException("La actividad no puede ser nula.");
         }
+    
+        if (!actividadesSeguimientoRecomendadas.contains(actividad)) {
+            throw new IllegalArgumentException("La actividad no está en la lista de actividades de seguimiento recomendadas.");
+        }
+    
+        if (!tienePermisoModificar(usuario)) {
+            throw new SecurityException("Solo el creador o un administrador pueden eliminar actividades de seguimiento.");
+        }
+    
+        actividadesSeguimientoRecomendadas.remove(actividad);
+        System.out.println("Actividad de seguimiento recomendada eliminada por: " + usuario.getNombre());
     }
 
     // Métodos de modificación de atributos clave (Setters con verificación de inscripciones en Learning Path)
@@ -227,6 +257,7 @@ public abstract class Actividad { // Clase abstracta Actividad
         if (learningPath.verificarSiHayInscritos()) {
             throw new UnsupportedOperationException("No se puede modificar la descripción si hay estudiantes inscritos en el Learning Path."); // No se puede modificar la descripcion si hay estudiantes inscritos en el Learning Path
         }
+        
         this.descripcion = descripcion;
     }
 

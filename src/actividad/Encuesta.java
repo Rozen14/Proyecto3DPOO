@@ -59,6 +59,11 @@ public class Encuesta extends Actividad {
     // Método para verificar si la encuesta es exitosa (si fue completada)
     @Override
     public boolean esExitosa(Estudiante estudiante) {
+
+        if (estudiante == null) {
+            throw new SecurityException("Un estudiante debe responder la encuesta.");
+        }
+
         Status estadoEstudiante = estadosPorEstudiante.get(estudiante); // Obtener el estado del estudiante
         if (estadoEstudiante == Status.Completado || estadoEstudiante == Status.Exitosa) { // Si el estado es completado o exitoso
             
@@ -100,6 +105,11 @@ public class Encuesta extends Actividad {
     public void eliminarPregunta(PreguntaAbierta pregunta) {
         if (pregunta == null) {
             throw new IllegalArgumentException("La pregunta no puede ser nula.");
+        }
+
+        // Si la pregunta no existe en la lista de preguntas
+        if (!listaPreguntas.contains(pregunta)) {
+            throw new IllegalArgumentException("La pregunta no existe en la encuesta.");
         }
 
         // Si la cantidad de preguntas es 0 o 1, no se puede eliminar más porque teiene que haber al menos una pregunta

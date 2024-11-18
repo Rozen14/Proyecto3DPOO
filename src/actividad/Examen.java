@@ -80,8 +80,13 @@ public class Examen extends Actividad {
     // Método para que el estudiante responda el examen
     @Override
     public void responder(Estudiante estudiante, String respuestas) {
-        if (estudiante == null) {
-            throw new SecurityException("Se requiere un estudiante para completar el examen.");
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+        
+        if (respuestas == null || respuestas.isEmpty()) {
+            throw new IllegalArgumentException("Las respuestas no pueden estar vacías.");
         }
 
         Status estadoActual = getStatusParaEstudiante(estudiante);
@@ -132,8 +137,12 @@ public class Examen extends Actividad {
         for (Pregunta pregunta : listaPreguntas) { // Iterar sobre las preguntas del examen
             if (pregunta instanceof PreguntaAbierta) { // Verificar si la pregunta es abierta
                 PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta; // Castear la pregunta a PreguntaAbierta
-
+                
                 // Evaluar la pregunta abierta, esto el profesor lo hace manualmente en la vida real, cuando se haga interfaz gráfica se puede hacer de forma automática con el metodo evaluarPorProfesor en PreguntaAbierta.
+                
+                // Mandar mensaje que a continuación se evaluará la pregunta abierta
+                System.out.println("Evaluando la pregunta abierta: " + preguntaAbierta.getEnunciado());
+                
                 if (preguntaAbierta.esCorrecta()) {  // Verificar si la respuesta es correcta
                     respuestasCorrectas++; // Aumentar el contador de respuestas correctas
 

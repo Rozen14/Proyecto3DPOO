@@ -65,7 +65,7 @@ public class Encuesta extends Actividad {
         }
 
         Status estadoEstudiante = estadosPorEstudiante.get(estudiante); // Obtener el estado del estudiante
-        if (estadoEstudiante == Status.Completado || estadoEstudiante == Status.Exitosa) { // Si el estado es completado o exitoso
+        if (estadoEstudiante == Status.Completado) { // Si el estado es completado o exitoso
             
             System.out.println("La encuesta ha sido completada exitosamente por: " + estudiante.getNombre()); // Mensaje de confirmación
             estudiante.agregarActividadCompletada(this);

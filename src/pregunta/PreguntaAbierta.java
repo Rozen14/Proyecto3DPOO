@@ -1,5 +1,9 @@
 package pregunta;
 
+import java.util.List;
+import java.util.ArrayList;
+import usuario.Profesor;
+
 public class PreguntaAbierta extends Pregunta {
 
     private String respuestaEstudiante; // Respuesta del estudiante
@@ -24,10 +28,25 @@ public class PreguntaAbierta extends Pregunta {
 
     // Método para que el profesor marque la pregunta como evaluada
     public void evaluarPorProfesor(boolean esCorrecta, String comentario) { 
+    
+
+        if (comentario == null) {
+            throw new IllegalArgumentException("El comentario no puede ser nulo.");
+        }
+
+        if (comentario.isEmpty()) {
+            throw new IllegalArgumentException("El comentario no puede estar vacío.");
+        }
+
         this.evaluada = true;
         this.esCorrecta = esCorrecta;
         this.comentarioProfesor = comentario;
+
+        // Mandar notificación al estudiante
+
+        System.out.println("La pregunta ha sido evaluada por el profesor.");
     }
+
 
     // Indica si la pregunta ha sido evaluada por el profesor
     @Override
@@ -47,5 +66,6 @@ public class PreguntaAbierta extends Pregunta {
     public boolean esCorrecta() {
         return evaluada && esCorrecta;
     }
+
 
 }

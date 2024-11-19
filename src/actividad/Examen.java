@@ -197,8 +197,13 @@ public class Examen extends Actividad {
     // Método para reintentar el examen por un estudiante específico, esto se usara más que todo en la interfaz gráfica
     @Override
     public void reintentar(Estudiante estudiante) {
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+
         Status estadoEstudiante = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
-        if (estadoEstudiante == Status.Enviada || estadoEstudiante == Status.Exitosa) { // Si el estado es enviado o exitoso     
+        if (estadoEstudiante == Status.Enviada || estadoEstudiante == Status.Completado) { // Si el estado es enviado o exitoso     
             throw new UnsupportedOperationException("El examen ya ha sido enviado o aprobado y no se puede reintentar."); // No se puede reintentar
         }
 
@@ -226,6 +231,10 @@ public class Examen extends Actividad {
 
         if (listaPreguntas.size() <= 1) {
             throw new UnsupportedOperationException("El examen debe tener al menos una pregunta.");
+        }
+
+        if (!listaPreguntas.contains(pregunta)) { // Verificar si la pregunta no está en la lista de preguntas
+            throw new IllegalArgumentException("La pregunta no está en el examen.");  
         }
 
         listaPreguntas.remove(pregunta); // Eliminar la pregunta de la lista de preguntas

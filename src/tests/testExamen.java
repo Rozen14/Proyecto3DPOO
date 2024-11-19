@@ -558,9 +558,9 @@ public class testExamen {
 
         assertFalse(examen.esExitosa(estudiante));
 
-        // Verificar que el estado del estudiante sea Incompleto
+        // Verificar que el estado del estudiante sea NoExitosa ya que no paso
 
-        assertEquals(Status.Incompleto, examen.getEstadosPorEstudiante().get(estudiante));
+        assertEquals(Status.noExitosa, examen.getEstadosPorEstudiante().get(estudiante));
 
         // Reintentar el examen
 
@@ -600,6 +600,182 @@ public class testExamen {
         assertEquals(100, examen.getCalificacionObtenida());
 
     }
+
+    @Test
+
+    public void testReintentarInvalidoPorEstudianteQueYaCompleto(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Calcular la calificacion final
+
+        examen.calcularCalificacionFinal();
+
+        // Verificar que el estudiante paso el examen
+
+        assertTrue(examen.esExitosa(estudiante));
+
+        // Verificar que el estado del estudiante sea Completado
+
+        assertEquals(Status.Completado, examen.getEstadosPorEstudiante().get(estudiante));
+
+        // Reintentar el examen
+
+        assertThrows(UnsupportedOperationException.class, () -> examen.reintentar(estudiante));
+
+
+    }
+
+    @Test
+
+    public void testReintentarInvalidoPorEstudianteQueYaEnvio(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+
+        // Verificar que el estado del estudiante sea Enviado
+
+        assertEquals(Status.Enviada, examen.getEstadosPorEstudiante().get(estudiante));
+
+        // Reintentar el examen
+
+        assertThrows(UnsupportedOperationException.class, () -> examen.reintentar(estudiante));
+
+
+
+    }
+
+    @Test
+    public void testAgregarPreguntaValido(){
+
+        // Crear una nueva pregunta cerrada
+
+        PreguntaCerrada preguntaCerrada = new PreguntaCerrada("¿2 + 2?");
+        Dictionary<Opcion, String> opcionA = new Hashtable<>();
+        opcionA.put(Opcion.A, "3");
+        Dictionary<Opcion, String> opcionB = new Hashtable<>();
+        opcionB.put(Opcion.B, "4"); // Respuesta correcta
+        preguntaCerrada.setOpcionA(opcionA);
+        preguntaCerrada.setOpcionB(opcionB);
+        preguntaCerrada.setRespuesta(opcionB);
+
+        // Agregar la pregunta al examen
+
+        examen.agregarPregunta(preguntaCerrada);
+
+        // Verificar que la pregunta se haya agregado correctamente
+
+        assertEquals(preguntaCerrada, examen.getListaPreguntas().get(2));
+
+    }
+
+    @Test
+    public void testAgregarPreguntaInvalidoPorPreguntaNula(){
+
+        // Agregar la pregunta al examen
+
+        assertThrows(IllegalArgumentException.class, () -> examen.agregarPregunta(null));
+
+    }
+
+    @Test
+    public void testEliminarPreguntaValida(){
+
+        // Crear una nueva pregunta cerrada
+
+        PreguntaCerrada preguntaCerrada = new PreguntaCerrada("¿2 + 2?");
+        Dictionary<Opcion, String> opcionA = new Hashtable<>();
+        opcionA.put(Opcion.A, "3");
+        Dictionary<Opcion, String> opcionB = new Hashtable<>();
+        opcionB.put(Opcion.B, "4"); // Respuesta correcta
+        preguntaCerrada.setOpcionA(opcionA);
+        preguntaCerrada.setOpcionB(opcionB);
+        preguntaCerrada.setRespuesta(opcionB);
+
+        // Agregar la pregunta al examen
+
+        examen.agregarPregunta(preguntaCerrada);
+
+        // Verificar que la pregunta se haya agregado correctamente
+
+        assertEquals(preguntaCerrada, examen.getListaPreguntas().get(2));
+
+        // Eliminar la pregunta del examen
+
+        examen.eliminarPregunta(preguntaCerrada);
+
+        // Verificar que la pregunta se haya eliminado correctamente
+
+        assertEquals(2, examen.getListaPreguntas().size());
+
+    }
+
+    @Test
+    public void testEliminarPreguntaInvalidoPorPreguntaNula(){
+
+        // Eliminar la pregunta del examen
+
+        assertThrows(IllegalArgumentException.class, () -> examen.eliminarPregunta(null));
+
+    }
+
+    @Test
+    public void testEliminarPreguntaInvalidoPorPreguntaNoExistente(){
+
+        // Crear una nueva pregunta cerrada
+
+        PreguntaCerrada preguntaCerrada = new PreguntaCerrada("¿2 + 2?");
+        Dictionary<Opcion, String> opcionA = new Hashtable<>();
+        opcionA.put(Opcion.A, "3");
+        Dictionary<Opcion, String> opcionB = new Hashtable<>();
+        opcionB.put(Opcion.B, "4"); // Respuesta correcta
+        preguntaCerrada.setOpcionA(opcionA);
+        preguntaCerrada.setOpcionB(opcionB);
+        preguntaCerrada.setRespuesta(opcionB);
+
+        // Eliminar la pregunta del examen
+
+        assertThrows(IllegalArgumentException.class, () -> examen.eliminarPregunta(preguntaCerrada));
+
+    }
+
+    @Test
+    public void testEvaluarInvalidoPorTamanioDePreguntas(){
+
+        // No se puede eliminar si actualmente solo hay uno o menos preguntas
+
+
+    
+    }
+
+
+
 
 
 

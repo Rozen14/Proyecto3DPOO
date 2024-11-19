@@ -273,6 +273,336 @@ public class testExamen {
         assertThrows(IllegalArgumentException.class, () -> examen.responder(estudiante, "B"));
     }
 
+    @Test
+    public void testEvaluarValido(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Verificar la calificación obtenida
+        assertEquals(100, examen.getCalificacionObtenida());
+
+
+    }
+
+    @Test
+    public void testEvaluarInvalidoPorProfesorNulo(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        // Evaluar el examen con un profesor nulo
+        assertThrows(SecurityException.class, () -> examen.evaluar(null, estudiante, learningPath, 100, true));
+
+    }
+
+    @Test
+    public void testEvaluarInvalidoPorProfesorNoCreador(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        // Evaluar el examen con un profesor no creador
+        Profesor profesor2 = new Profesor("Pedro", "password", "pedro@example.com", new ArrayList<>(), new ArrayList<>());
+
+        assertThrows(SecurityException.class, () -> examen.evaluar(profesor2, estudiante, learningPath, 100, true));
+
+
+
+    }
+
+    @Test
+    public void testEvaluarInvalidoPorEstudianteNulo(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        // Evaluar el examen con un estudiante nulo
+        assertThrows(IllegalArgumentException.class, () -> examen.evaluar(profesor, null, learningPath, 100, true));
+
+    }
+
+    @Test
+    public void testEvaluarInvalidoPorLearningPathNulo(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        // Evaluar el examen con un LearningPath nulo
+        assertThrows(IllegalArgumentException.class, () -> examen.evaluar(profesor, estudiante, null, 100, true));
+
+    }
+
+    @Test
+    public void testEvaluarInvalidoPorEstudiantesInscritosEnLearningPath(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        // Evaluar el examen con un estudiante no inscrito en el LearningPath
+        Estudiante estudiante2 = new Estudiante("Pedro", "password", "pedro@example.com");
+
+        assertThrows(IllegalArgumentException.class, () -> examen.evaluar(profesor, estudiante2, learningPath, 100, true));
+
+
+    }
+
+    @Test
+    public void calcularCalificacionFinalValido(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Calcular la calificacion final
+
+        examen.calcularCalificacionFinal();
+
+        // Verificar que la calificacion final sea 100
+
+        assertEquals(100, examen.getCalificacionObtenida());
+
+
+    }
+
+    @Test
+
+    public void testEsExitosaValida(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Calcular la calificacion final
+
+        examen.calcularCalificacionFinal();
+
+        // Verificar que la calificacion final sea 100
+
+        assertTrue(examen.esExitosa(estudiante));
+
+    }
+
+    @Test
+    public void testEsExitosaInvalidaPorNoExitoso(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "A;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen, el estudiante no responde correctamente
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(false, "Respuesta incorrecta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Calcular la calificacion final
+
+        examen.calcularCalificacionFinal();
+
+        assertFalse(examen.esExitosa(estudiante));
+
+    }
+
+    @Test
+    public void testEsExitosaInvalidoPorEstudianteNulo(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "A;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen, el estudiante no responde correctamente
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(false, "Respuesta incorrecta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Calcular la calificacion final
+
+        examen.calcularCalificacionFinal();
+
+        // Verificar que la calificacion final sea 100
+
+        assertThrows(IllegalArgumentException.class, () -> examen.esExitosa(null));
+
+    }   
+
+    @Test
+    public void testReintentarValido(){
+
+        // Responder la pregunta cerrada y abierta
+        examen.responder(estudiante, "A;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen, el estudiante no responde correctamente
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(false, "Respuesta incorrecta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Calcular la calificacion final
+
+        examen.calcularCalificacionFinal();
+
+       // Verificar que el estudiante no paso el examen
+
+        assertFalse(examen.esExitosa(estudiante));
+
+        // Verificar que el estado del estudiante sea Incompleto
+
+        assertEquals(Status.Incompleto, examen.getEstadosPorEstudiante().get(estudiante));
+
+        // Reintentar el examen
+
+        examen.reintentar(estudiante);
+
+        // Estudiante vuelve a responder el examen
+
+        examen.responder(estudiante, "B;Java es un lenguaje de programación");
+
+        // Profesor preguntas abiertas del examen, el estudiante responde correctamente
+
+        for (Pregunta pregunta : examen.getListaPreguntas()) {
+            if (pregunta instanceof PreguntaAbierta) {
+                PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta;
+                // Evaluar la pregunta abierta
+
+                preguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
+            }
+        }
+
+        examen.evaluar(profesor, estudiante, learningPath, 100, true);
+
+        // Calcular la calificacion final
+
+        examen.calcularCalificacionFinal();
+
+        // Verificar que el estudiante paso el examen
+
+        assertTrue(examen.esExitosa(estudiante));
+
+        // Verificar que el estado del estudiante sea Completado
+
+        assertEquals(Status.Completado, examen.getEstadosPorEstudiante().get(estudiante));
+
+        // Verificar que la calificacion final sea 100
+
+        assertEquals(100, examen.getCalificacionObtenida());
+
+    }
+
+
+
 
 
 

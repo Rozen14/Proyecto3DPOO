@@ -128,9 +128,18 @@ public class Examen extends Actividad {
             throw new SecurityException("Solo el profesor creador puede evaluar el examen."); // Lanzar excepción
         }
 
+        if (learningPath == null) { // Verificar si el learningPath es nulo
+            throw new IllegalArgumentException("El Learning Path no puede ser nulo.");
+        }
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+
         if (!learningPath.verificarSiInscrito(estudiante)) {
             throw new IllegalArgumentException("El estudiante no está inscrito en el Learning Path para este examen."); // Lanzar excepción
         }
+
 
         System.out.println("Advertencia: la calificación proporcionada (" + calificacionObtenida + ") se ignorará en el examen."); // Advertencia
 
@@ -152,7 +161,7 @@ public class Examen extends Actividad {
 
         calcularCalificacionFinal(); // Calcular la calificación final del examen con el método auxiliar
         if (this.calificacionObtenida >= this.calificacionMinima) { // Verificar si la calificación obtenida es mayor o igual a la mínima
-            setStatusParaEstudiante(estudiante, Status.Exitosa); // Cambiar el estado del estudiante a Exitosa
+            setStatusParaEstudiante(estudiante, Status.Completado); // Cambiar el estado del estudiante a Exitosa
             System.out.println("El examen ha sido aprobado por: " + estudiante.getNombre() + " con una nota de " + calificacionObtenida + "%."); // Mensaje de confirmación
         } else { // Si la calificación no es suficiente
             setStatusParaEstudiante(estudiante, Status.noExitosa); // Cambiar el estado del estudiante a noExitosa
@@ -161,7 +170,7 @@ public class Examen extends Actividad {
     }
 
     // Método para calcular la calificación final del examen
-    private void calcularCalificacionFinal() { 
+    public void calcularCalificacionFinal() { 
         int totalPreguntas = listaPreguntas.size(); // Obtener la cantidad total de preguntas
         calificacionObtenida = ((double) respuestasCorrectas / totalPreguntas) * 100; // Calcular la calificación obtenida
     }
@@ -169,8 +178,13 @@ public class Examen extends Actividad {
     // Método para verificar si el examen es exitoso para un estudiante específico
     @Override
     public boolean esExitosa(Estudiante estudiante) { 
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+
         Status estadoEstudiante = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
-        if (estadoEstudiante == Status.Exitosa || estadoEstudiante == Status.Completado) { // Si el estado es exitoso o completado
+        if (estadoEstudiante == Status.Completado) { // Si el estado es completado
             System.out.println("El examen fue completado exitosamente por: " + estudiante.getNombre() + " con una nota de " + calificacionObtenida + "%."); // Mensaje de confirmación
             estudiante.agregarActividadCompletada(this); // Agregar el examen a la lista de actividades completadas del estudiante
             return true; // Retornar verdadero

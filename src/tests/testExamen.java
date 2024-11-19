@@ -159,6 +159,17 @@ public class testExamen {
     }
 
     @Test
+    public void testSetCalificacionMinima(){
+
+        // Cambiar la calificacion minima
+
+        examen.setCalificacionMinima(60.0);
+
+        assertEquals(60.0, examen.getCalificacionMinima());
+
+    }
+    
+    @Test
 
     public void testSetCalificacionObtenida(){
 
@@ -602,6 +613,16 @@ public class testExamen {
     }
 
     @Test
+    public void testReintentarInvalidoPorEstudianteNulo(){
+
+        // Reintentar el examen
+
+        assertThrows(IllegalArgumentException.class, () -> examen.reintentar(null));
+
+    }
+
+
+    @Test
 
     public void testReintentarInvalidoPorEstudianteQueYaCompleto(){
 
@@ -759,6 +780,8 @@ public class testExamen {
         preguntaCerrada.setOpcionB(opcionB);
         preguntaCerrada.setRespuesta(opcionB);
 
+        // No la agregamos al examen
+
         // Eliminar la pregunta del examen
 
         assertThrows(IllegalArgumentException.class, () -> examen.eliminarPregunta(preguntaCerrada));
@@ -770,6 +793,39 @@ public class testExamen {
 
         // No se puede eliminar si actualmente solo hay uno o menos preguntas
 
+        // Eliminar las preguntas actuales
+
+        examen.getListaPreguntas().clear();
+
+        // Crear una nueva pregunta cerrada
+
+        PreguntaCerrada preguntaCerrada = new PreguntaCerrada("¿2 + 2?");
+
+        Dictionary<Opcion, String> opcionA = new Hashtable<>();
+
+        opcionA.put(Opcion.A, "3");
+
+        Dictionary<Opcion, String> opcionB = new Hashtable<>();
+
+        opcionB.put(Opcion.B, "4"); // Respuesta correcta
+
+        preguntaCerrada.setOpcionA(opcionA);
+
+        preguntaCerrada.setOpcionB(opcionB);
+
+        preguntaCerrada.setRespuesta(opcionB);
+
+        // Agregar la pregunta al examen
+
+        examen.agregarPregunta(preguntaCerrada);
+
+        // Verificar que la pregunta se haya agregado correctamente
+
+        assertEquals(preguntaCerrada, examen.getListaPreguntas().get(0));
+
+        // Intentar eliminar la pregunta
+
+        assertThrows(UnsupportedOperationException.class, () -> examen.eliminarPregunta(preguntaCerrada));
 
     
     }

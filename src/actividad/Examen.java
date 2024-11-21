@@ -7,6 +7,7 @@ import usuario.Estudiante;
 import usuario.Profesor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class Examen extends Actividad {
     protected double calificacionMinima;
     private List<String> respuestasAbiertas;
     private int respuestasCorrectas;
-    private double calificacionObtenida;
+    private Map <Estudiante, Double> calificacionesObtenidas;
 
     public Examen(String descripcion, Nivel nivelDificultad, String objetivo, int duracionEsperada, 
                   double version, LocalDateTime fechaLimite, Map<Estudiante, Status> estadosPorEstudiante, Obligatoria obligatoria, 
@@ -27,10 +28,11 @@ public class Examen extends Actividad {
         super(descripcion, nivelDificultad, objetivo, duracionEsperada, version, 
               fechaLimite, estadosPorEstudiante, obligatoria, "examen", creador, 
               actividadesPreviasSugeridas, actividadesSeguimientoRecomendadas);
-        this.listaPreguntas = listaPreguntas;
+        
+              this.listaPreguntas = listaPreguntas;
         this.calificacionMinima = calificacionMinima;
         this.respuestasCorrectas = 0;
-        this.calificacionObtenida = 0.0;
+        this.calificacionesObtenidas = new HashMap<>();
         this.respuestasAbiertas = new ArrayList<>();
     }
 
@@ -43,8 +45,8 @@ public class Examen extends Actividad {
         return calificacionMinima;
     }
 
-    public double getCalificacionObtenida() {
-        return calificacionObtenida;
+    public double getCalificacionObtenida(Estudiante estudiante) {
+        return calificacionesObtenidas.getOrDefault(estudiante, 0.0);
     }
 
     public int getRespuestasCorrectas() {
@@ -53,6 +55,10 @@ public class Examen extends Actividad {
 
     public List<String> getRespuestasAbiertas() {
         return respuestasAbiertas;
+    }
+
+    public Map<Estudiante, Double> getCalificacionesObtenidas() {
+        return calificacionesObtenidas;
     }
  
 
@@ -65,9 +71,14 @@ public class Examen extends Actividad {
         this.calificacionMinima = calificacionMinima;
     }
 
-    public void setCalificacionObtenida(double calificacionObtenida) {
-        this.calificacionObtenida = calificacionObtenida;
+    public void setCalificacionObtenida(Estudiante estudiante, double calificacionObtenida) {
+        this.calificacionesObtenidas.put(estudiante, calificacionObtenida);
     }
+
+    public void setCalificacionesObtenidas(Map<Estudiante, Double> calificacionesObtenidas) {
+        this.calificacionesObtenidas = calificacionesObtenidas;
+    }
+    
 
     public void setRespuestasCorrectas(int respuestasCorrectas) {
         this.respuestasCorrectas = respuestasCorrectas;
@@ -75,6 +86,34 @@ public class Examen extends Actividad {
 
     public void setRespuestasAbiertas(List<String> respuestasAbiertas) {
         this.respuestasAbiertas = respuestasAbiertas;
+    }
+
+    public void inscripcionEstudiante(Estudiante estudiante)
+    {
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+
+        if (estadosPorEstudiante.containsKey(estudiante)) { // Verificar si el estudiante ya está inscrito
+            throw new UnsupportedOperationException("El estudiante ya está inscrito en el examen.");
+        }
+
+        if (fechaLimite.isBefore(LocalDateTime.now())) { // Verificar si la fecha límite ya pasó
+            throw new UnsupportedOperationException("La fecha límite para inscribirse en el examen ha pasado.");
+        }
+
+        LearningPath learningPath = estudiante.getLearningPathActual(); // Obtener el Learning Path actual del estudiante
+    
+        if (!learningPath.verificarSiInscrito(estudiante)) { // Verificar si el estudiante está inscrito en un Learning Path
+            throw new UnsupportedOperationException("El examen es obligatorio y el estudiante no está inscrito en un Learning Path.");
+        }
+        
+
+        estadosPorEstudiante.put(estudiante, Status.Incompleto); // Agregar el estudiante al examen con estado Incompleto
+        calificacionesObtenidas.put(estudiante, 0.0); // Agregar el estudiante al examen con calificación 0
+        System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en el examen."); // Mensaje de confirmación
+
     }
 
     // Método para que el estudiante responda el examen
@@ -110,7 +149,9 @@ public class Examen extends Actividad {
                 if (preguntaCerrada.esCorrecta()) {  // Verificar si la respuesta es correcta
                     respuestasCorrectas++; // Aumentar el contador de respuestas correctas
                 }
-            } else if (pregunta instanceof PreguntaAbierta) { // Verificar si la pregunta es abierta
+            }
+            
+            if (pregunta instanceof PreguntaAbierta) { // Verificar si la pregunta es abierta
                 PreguntaAbierta preguntaAbierta = (PreguntaAbierta) pregunta; // Castear la pregunta a PreguntaAbierta, esto no se usa pero lo hago para guiarme en el futuro
                 respuestasAbiertas.add(respuestaEstudiante);
             }
@@ -159,8 +200,8 @@ public class Examen extends Actividad {
             }
         }
 
-        calcularCalificacionFinal(); // Calcular la calificación final del examen con el método auxiliar
-        if (this.calificacionObtenida >= this.calificacionMinima) { // Verificar si la calificación obtenida es mayor o igual a la mínima
+        calcularCalificacionFinal(estudiante); // Calcular la calificación final del examen con el método auxiliar
+        if (this.calificacionesObtenidas.get(estudiante) >= this.calificacionMinima) { // Verificar si la calificación obtenida es mayor o igual a la mínima
             setStatusParaEstudiante(estudiante, Status.Completado); // Cambiar el estado del estudiante a Exitosa
             System.out.println("El examen ha sido aprobado por: " + estudiante.getNombre() + " con una nota de " + calificacionObtenida + "%."); // Mensaje de confirmación
         } else { // Si la calificación no es suficiente
@@ -170,9 +211,10 @@ public class Examen extends Actividad {
     }
 
     // Método para calcular la calificación final del examen
-    public void calcularCalificacionFinal() { 
+    public void calcularCalificacionFinal(Estudiante estudiante) { 
         int totalPreguntas = listaPreguntas.size(); // Obtener la cantidad total de preguntas
-        calificacionObtenida = ((double) respuestasCorrectas / totalPreguntas) * 100; // Calcular la calificación obtenida
+        double calificacionObtenida = ((double) respuestasCorrectas / totalPreguntas) * 100; // Calcular la calificación obtenida en base a las respuestas correctas
+        calificacionesObtenidas.put(estudiante, calificacionObtenida); // Guardar la calificación obtenida para el estudiante
     }
 
     // Método para verificar si el examen es exitoso para un estudiante específico
@@ -185,7 +227,7 @@ public class Examen extends Actividad {
 
         Status estadoEstudiante = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
         if (estadoEstudiante == Status.Completado) { // Si el estado es completado
-            System.out.println("El examen fue completado exitosamente por: " + estudiante.getNombre() + " con una nota de " + calificacionObtenida + "%."); // Mensaje de confirmación
+            System.out.println("El examen fue completado exitosamente por: " + estudiante.getNombre() + " con una nota de " + calificacionesObtenidas.get(estudiante) + "%."); // Mensaje de confirmación
             estudiante.agregarActividadCompletada(this); // Agregar el examen a la lista de actividades completadas del estudiante
             return true; // Retornar verdadero
         } else { // Si el examen no fue completado
@@ -208,7 +250,7 @@ public class Examen extends Actividad {
         }
 
         respuestasCorrectas = 0; // Reiniciar el contador de respuestas correctas
-        calificacionObtenida = 0.0; // Reiniciar la calificación obtenida
+        calificacionesObtenidas.put(estudiante, 0.0); // Reiniciar la calificación obtenida para el estudiante
         respuestasAbiertas.clear(); // Limpiar las respuestas abiertas
         setStatusParaEstudiante(estudiante, Status.Incompleto); // Cambiar el estado del estudiante a Incompleto
         System.out.println("El examen ha sido reiniciado por: " + estudiante.getNombre()); // Mensaje de confirmación

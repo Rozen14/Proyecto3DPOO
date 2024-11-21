@@ -90,7 +90,11 @@ public class PersistenciaActividad {
     } 
     else if (actividad instanceof Examen) {
         Examen examen = (Examen) actividad;
-    
+
+        String calificacionesObtenidasStr = examen.getCalificacionesObtenidas().entrySet().stream()
+        .map(entry -> entry.getKey().getCorreo() + ":" + entry.getValue())
+        .collect(Collectors.joining(";"));
+
         writer.write("Examen," + actividad.getDescripcion() + "," +
                 examen.getNivelDificultad() + "," +
                 examen.getObjetivo() + "," +
@@ -114,7 +118,7 @@ public class PersistenciaActividad {
                         .collect(Collectors.joining(";")) + "," + // Se juntan las preguntas con ;
                 examen.getCalificacionMinima() + "," +
                 examen.getRespuestasCorrectas() + "," +
-                examen.getCalificacionObtenida() + "," +
+                calificacionesObtenidasStr + "," +
                 examen.getRespuestasAbiertas().stream().collect(Collectors.joining(",")) + "," +
                 examen.getCreador().getNombre());
     
@@ -266,7 +270,7 @@ public class PersistenciaActividad {
 
     }
 
-    public static Examen cargarExamen(String[] datos, Profesor creador, DateTimeFormatter formatter) { // Cambie lo de cargar examen porque no estaba cargando las preguntas bien el formato estaba rarisimo ahora lo que hace es que detecta si es cerrada o abierta y las carga en una lista de preguntas con un metodo para abiertas o cerradas dependiendo del tipo
+    public static Examen cargarExamen(String[] datos, Profesor creador, DateTimeFormatter formatter) {
         String descripcion = datos[1];
         Nivel nivel = Nivel.valueOf(datos[2]);
         String objetivo = datos[3];
@@ -275,42 +279,46 @@ public class PersistenciaActividad {
         LocalDateTime fechaLimite = LocalDateTime.parse(datos[6], formatter);
         LocalDateTime fechaInicio = LocalDateTime.parse(datos[7], formatter);
         Map<Estudiante, Status> estadosPorEstudiante = Arrays.stream(datos[8].split(";"))
-        .map(par -> par.split(":"))
-        .collect(Collectors.toMap(
-                par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
-                par -> Status.valueOf(par[1])
-        ));
+            .map(par -> par.split(":"))
+            .collect(Collectors.toMap(
+                    par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
+                    par -> Status.valueOf(par[1])
+            ));
         Obligatoria obligatoria = datos[9].equals("SI") ? Obligatoria.SI : Obligatoria.NO;
         List<Actividad> actividadesPreviasSugeridas = cargarActividades(datos[10], creador, formatter);
         List<Actividad> actividadesSeguimientoRecomendadas = cargarActividades(datos[11], creador, formatter);
     
         // Cargar lista de preguntas de distintos tipos
         List<Pregunta> listaPreguntas = new ArrayList<>();
-        String[] preguntasData = datos[12].split(";"); // Asume que cada pregunta está separada por ; ya que asi lo definimos en el metodo de guardar
-        for (String preguntaData : preguntasData) { // Se recorre las preguntas
-            if (preguntaData.startsWith("Cerrada|")) { // Si la pregunta es cerrada
-                String preguntaCerradaStr = preguntaData.substring("Cerrada|".length()); // Se saca la pregunta cerrada
-                List<PreguntaCerrada> preguntasCerradas = PersistenciaPregunta.cargarPreguntasCerradas(preguntaCerradaStr); // Se cargan las preguntas cerradas
-                listaPreguntas.addAll(preguntasCerradas); // Se agregan las preguntas cerradas a la lista de preguntas
-            } else if (preguntaData.startsWith("Abierta|")) { // Si la pregunta es abierta
-                String preguntaAbiertaStr = preguntaData.substring("Abierta|".length()); // Se saca la pregunta abierta
-                List<PreguntaAbierta> preguntasAbiertas = PersistenciaPregunta.cargarPreguntasAbiertas(preguntaAbiertaStr); // Se cargan las preguntas abiertas
-                listaPreguntas.addAll(preguntasAbiertas); // Se agregan las preguntas abiertas a la lista de preguntas
+        String[] preguntasData = datos[12].split(";");
+        for (String preguntaData : preguntasData) {
+            if (preguntaData.startsWith("Cerrada|")) {
+                String preguntaCerradaStr = preguntaData.substring("Cerrada|".length());
+                List<PreguntaCerrada> preguntasCerradas = PersistenciaPregunta.cargarPreguntasCerradas(preguntaCerradaStr);
+                listaPreguntas.addAll(preguntasCerradas);
+            } else if (preguntaData.startsWith("Abierta|")) {
+                String preguntaAbiertaStr = preguntaData.substring("Abierta|".length());
+                List<PreguntaAbierta> preguntasAbiertas = PersistenciaPregunta.cargarPreguntasAbiertas(preguntaAbiertaStr);
+                listaPreguntas.addAll(preguntasAbiertas);
             }
         }
     
-        double calificacionMinima = Double.parseDouble(datos[13]);  // Se saca la calificacion minima
-        int respuestasCorrectas = Integer.parseInt(datos[14]); // Se sacan las respuestas correctas
-        double calificacionObtenida = Double.parseDouble(datos[15]); // Se sacan las respuestas correctas
-        List<String> respuestasAbiertas = Arrays.asList(datos[16].split(",")); // Se sacan las respuestas abiertas y se juntan con una coma
-
+        double calificacionMinima = Double.parseDouble(datos[13]);
+        int respuestasCorrectas = Integer.parseInt(datos[14]);
+        Map<Estudiante, Double> calificacionesObtenidas = Arrays.stream(datos[15].split(";"))
+            .map(par -> par.split(":"))
+            .collect(Collectors.toMap(
+                    par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
+                    par -> Double.parseDouble(par[1])
+            ));
+        List<String> respuestasAbiertas = Arrays.asList(datos[16].split(","));
     
         Examen examen = new Examen(descripcion, nivel, objetivo, duracion, version, fechaLimite, estadosPorEstudiante, obligatoria, listaPreguntas, calificacionMinima, creador, actividadesPreviasSugeridas, actividadesSeguimientoRecomendadas);
     
         // Asignar valores adicionales
         examen.setFechaInicio(fechaInicio);
-        examen.setCalificacionObtenida(calificacionObtenida);
         examen.setRespuestasCorrectas(respuestasCorrectas);
+        examen.setCalificacionesObtenidas(calificacionesObtenidas);
         examen.setRespuestasAbiertas(respuestasAbiertas);
     
         return examen;

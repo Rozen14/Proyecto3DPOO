@@ -34,8 +34,6 @@ public class testExamen {
     public void setUp() {
     profesor = new Profesor("Juan", "password", "juan@example.com", new ArrayList<>(), new ArrayList<>());
     estudiante = new Estudiante("Maria", "password", "maria@example.com");
-    estadosPorEstudiante = new HashMap<>();
-    estadosPorEstudiante.put(estudiante, Status.Incompleto);
 
         listaPreguntas = new ArrayList<>();
 
@@ -55,7 +53,8 @@ public class testExamen {
         listaPreguntas.add(preguntaCerrada);
         listaPreguntas.add(preguntaAbierta);
 
-    examen = new Examen(
+        estadosPorEstudiante = new HashMap<>();
+        examen = new Examen(
             "Examen Inicial",
             Nivel.Intermedio,
             "Probar conocimientos básicos",
@@ -70,8 +69,6 @@ public class testExamen {
             new ArrayList<>(),
             new ArrayList<>()
     );
-
-    
 
     // Crear LearningPath y asociarlo con el examen y estudiante
     List<Actividad> actividades = new ArrayList<>();
@@ -89,6 +86,8 @@ public class testExamen {
         );
     
     learningPath.inscripcionEstudiante(estudiante);
+    // Asociar el examen al estudiante
+    examen.inscripcionEstudiante(estudiante);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class testExamen {
 
         // Deberia ser 0 y ya al inicio
 
-        assertEquals(0, examen.getCalificacionObtenida());
+        assertEquals(0, examen.getCalificacionObtenida(estudiante));
 
     }
 
@@ -175,9 +174,9 @@ public class testExamen {
 
         // Cambiar la calificacion obtenida
 
-        examen.setCalificacionObtenida(100);
+        examen.setCalificacionObtenida(estudiante, 100);
 
-        assertEquals(100, examen.getCalificacionObtenida());
+        assertEquals(100, examen.getCalificacionObtenida(estudiante));
 
     }
 
@@ -304,7 +303,7 @@ public class testExamen {
         examen.evaluar(profesor, estudiante, learningPath, 100, true);
 
         // Verificar la calificación obtenida
-        assertEquals(100, examen.getCalificacionObtenida());
+        assertEquals(100, examen.getCalificacionObtenida(estudiante));
 
 
     }
@@ -447,11 +446,11 @@ public class testExamen {
 
         // Calcular la calificacion final
 
-        examen.calcularCalificacionFinal();
+        examen.calcularCalificacionFinal(estudiante);
 
         // Verificar que la calificacion final sea 100
 
-        assertEquals(100, examen.getCalificacionObtenida());
+        assertEquals(100, examen.getCalificacionObtenida(estudiante));
 
 
     }
@@ -478,7 +477,7 @@ public class testExamen {
 
         // Calcular la calificacion final
 
-        examen.calcularCalificacionFinal();
+        examen.calcularCalificacionFinal(estudiante);
 
         // Verificar que la calificacion final sea 100
 
@@ -507,7 +506,7 @@ public class testExamen {
 
         // Calcular la calificacion final
 
-        examen.calcularCalificacionFinal();
+        examen.calcularCalificacionFinal(estudiante);
 
         assertFalse(examen.esExitosa(estudiante));
 
@@ -534,7 +533,7 @@ public class testExamen {
 
         // Calcular la calificacion final
 
-        examen.calcularCalificacionFinal();
+        examen.calcularCalificacionFinal(estudiante);
 
         // Verificar que la calificacion final sea 100
 
@@ -563,7 +562,7 @@ public class testExamen {
 
         // Calcular la calificacion final
 
-        examen.calcularCalificacionFinal();
+        examen.calcularCalificacionFinal(estudiante);
 
        // Verificar que el estudiante no paso el examen
 
@@ -596,7 +595,7 @@ public class testExamen {
 
         // Calcular la calificacion final
 
-        examen.calcularCalificacionFinal();
+        examen.calcularCalificacionFinal(estudiante);
 
         // Verificar que el estudiante paso el examen
 
@@ -608,7 +607,7 @@ public class testExamen {
 
         // Verificar que la calificacion final sea 100
 
-        assertEquals(100, examen.getCalificacionObtenida());
+        assertEquals(100, examen.getCalificacionObtenida(estudiante));
 
     }
 
@@ -644,7 +643,7 @@ public class testExamen {
 
         // Calcular la calificacion final
 
-        examen.calcularCalificacionFinal();
+        examen.calcularCalificacionFinal(estudiante);
 
         // Verificar que el estudiante paso el examen
 

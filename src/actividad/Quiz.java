@@ -4,6 +4,7 @@ import pregunta.PreguntaCerrada;
 import usuario.Estudiante;
 import usuario.Profesor;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public class Quiz extends Actividad {
 
     protected List<PreguntaCerrada> listaPreguntas; // Lista de preguntas cerradas
     protected double calificacionMinima; // Calificación mínima para aprobar
-    private double calificacionObtenida; // Nota final obtenida por el estudiante
+    private Map<Estudiante, Double> calificacionesObtenidas; // Nota final obtenida por el estudiante
 
     public Quiz(String descripcion, Nivel nivelDificultad, String objetivo, int duracionEsperada, 
                 double version, LocalDateTime fechaLimite, Map<Estudiante, Status> estadosPorEstudiante, Obligatoria obligatoria, 
@@ -24,7 +25,7 @@ public class Quiz extends Actividad {
               actividadesPreviasSugeridas, actividadesSeguimientoRecomendadas);
         this.listaPreguntas = listaPreguntas;
         this.calificacionMinima = calificacionMinima;
-        this.calificacionObtenida = 0.0; // Inicializar la calificación obtenida en 0, ya que no se ha completado, cuando se haga la persistencia la idea es que se cargue la calificación obtenida con el setter en vez del constructor 
+        this.calificacionesObtenidas = new HashMap<>(); // Inicializar la calificación obtenida en 0, ya que no se ha completado, cuando se haga la persistencia la idea es que se cargue la calificación obtenida con el setter en vez del constructor 
     }
 
     // Getters 
@@ -37,8 +38,12 @@ public class Quiz extends Actividad {
         return calificacionMinima;
     }
 
-    public double getCalificacionObtenida() {
-        return calificacionObtenida;
+    public double getCalificacionObtenida(Estudiante estudiante) {
+        return calificacionesObtenidas.getOrDefault(estudiante, 0.0);
+    }
+
+    public Map<Estudiante, Double> getCalificacionesObtenidas() {
+        return calificacionesObtenidas;
     }
 
     // Setters que solo pueden ser usados por profesores, administradores, o por la persistencia de datos.
@@ -51,10 +56,14 @@ public class Quiz extends Actividad {
         this.calificacionMinima = calificacionMinima;
     }
 
-    public void setCalificacionObtenida(double calificacionObtenida) {
-        this.calificacionObtenida = calificacionObtenida;
+
+    public void setCalificacionObtenida(Estudiante estudiante, double calificacionObtenida) {
+        this.calificacionesObtenidas.put(estudiante, calificacionObtenida);
     }
 
+    public void setCalificacionesObtenidas(Map<Estudiante, Double> calificacionesObtenidas) {
+        this.calificacionesObtenidas = calificacionesObtenidas;
+    }
 
     
     // Método para responder al quiz completo
@@ -99,9 +108,13 @@ public class Quiz extends Actividad {
             }
         }
     
+        
         // Calcular la nota final obtenida
-        calificacionObtenida = ((double) preguntasCorrectas / listaPreguntas.size()) * 100; // Calcular la calificación obtenida en base a las respuestas correctas
+        double calificacionObtenida = ((double) preguntasCorrectas / listaPreguntas.size()) * 100; // Calcular la calificación obtenida en base a las respuestas correctas
     
+        // Guardar la calificación obtenida
+        setCalificacionObtenida(estudiante, calificacionObtenida); // Guardar la calificación obtenida por el estudiante
+
         // Verificar si se alcanzó la calificación mínima para aprobar
         if (calificacionObtenida >= calificacionMinima) {
             System.out.println("El quiz fue completado exitosamente con una calificación de " + calificacionObtenida + "%.");
@@ -138,7 +151,7 @@ public class Quiz extends Actividad {
         } else { // Si el estado es incompleto o no exitoso
             System.out.println("El estudiante " + estudiante.getNombre() + " puede iniciar o volver a intentar el quiz."); // Mensaje de confirmación
             // Reiniciar el estado del quiz para reintento
-            this.calificacionObtenida = 0.0; // Reiniciar la calificación obtenida
+            setCalificacionObtenida(estudiante, 0.0); // Reiniciar la calificación obtenida
             for (PreguntaCerrada pregunta : listaPreguntas) {
                 pregunta.setEscogida(null); // Reiniciar la respuesta elegida
             }
@@ -177,5 +190,32 @@ public class Quiz extends Actividad {
         }
 
         listaPreguntas.remove(pregunta);
+    }
+
+    // Inscripcion estudiante a quiz
+
+    public void inscripcionEstudiante(Estudiante estudiante) {
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+    
+        if (estadosPorEstudiante.containsKey(estudiante)) { // Verificar si el estudiante ya está inscrito
+            throw new UnsupportedOperationException("El estudiante ya está inscrito en el quiz.");
+        }
+    
+        if (fechaLimite.isBefore(LocalDateTime.now())) { // Verificar si la fecha límite ya pasó
+            throw new UnsupportedOperationException("La fecha límite para inscribirse en el quiz ha pasado.");
+        }
+    
+        LearningPath learningPath = estudiante.getLearningPathActual(); // Obtener el Learning Path actual del estudiante
+    
+        if (!learningPath.verificarSiInscrito(estudiante)) { // Verificar si el estudiante está inscrito en un Learning Path
+            throw new UnsupportedOperationException("El quiz es obligatorio y el estudiante no está inscrito en un Learning Path.");
+        }
+    
+        estadosPorEstudiante.put(estudiante, Status.Incompleto); // Agregar el estudiante al quiz con estado Incompleto
+        calificacionesObtenidas.put(estudiante, 0.0); // Agregar el estudiante al quiz con calificación 0
+        System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en el quiz."); // Mensaje de confirmación
     }
 }

@@ -130,9 +130,13 @@ public class testExamen {
     @Test
     public void testGetCalificacionesObtenidas(){
 
-        // Deberia ser un hashmap vacio al inicio
+        // Deberia ser el hasmap con el estudiante que inscribimos en el setup
 
-        assertEquals(new HashMap<>(), examen.getCalificacionesObtenidas());
+        Map<Estudiante, Double> calificacionesObtenidas = new HashMap<>();
+
+        calificacionesObtenidas.put(estudiante, 0.0);
+
+        assertEquals(calificacionesObtenidas, examen.getCalificacionesObtenidas());
 
     }
 
@@ -238,8 +242,76 @@ public class testExamen {
 
         // Crear un nuevo estudiante no inscrito al learning path ni examen
 
-        Estudiante estudiante2 = new Estudiante("Pedro", "password", "pedro@example.com", new ArrayList<>(), new ArrayList<>());
+        Estudiante estudiante2 = new Estudiante("Pedro", "password", "pedro@example.com");
+
+        // Inscribir al estudiante al learning path actual y examen
+
+        learningPath.inscripcionEstudiante(estudiante2);
+        
+        examen.inscripcionEstudiante(estudiante2);
+
+        // Verificar que el estudiante se haya inscrito correctamente
+
+        assertTrue(learningPath.getEstudiantesInscritos().contains(estudiante2));
         }
+
+        @Test
+        public void testInscripcionEstudianteInvalidoPorEstudianteNulo(){
+
+        // Inscribir al estudiante al learning path actual y examen
+
+        assertThrows(IllegalArgumentException.class, () -> examen.inscripcionEstudiante(null));
+
+
+        }
+
+        @Test
+        public void testInscripcionEstudianteInvalidoPorEstudianteYaInscrito(){
+            // Intentamos inscribir a los estudiantes del setup que ya estan inscritos
+
+            assertThrows(UnsupportedOperationException.class, () -> examen.inscripcionEstudiante(estudiante));
+        }
+        
+        @Test
+        public void testInscripcionEstudianteInvalidoPorEstudianteNoInscritoEnUnLearningPath(){
+
+            // Crear un nuevo estudiante no inscrito al learning path
+
+            Estudiante estudiante2 = new Estudiante("Pedro", "password", "pedro@example.com");
+
+            // Inscribir al estudiante al examen
+
+            assertThrows(UnsupportedOperationException.class, () -> examen.inscripcionEstudiante(estudiante2));
+        }
+
+        @Test
+        public void testInscripcionEstudianteInvalidoPorEstudianteNoInscritoEnLearningPath(){
+
+            // Crear un nuevo estudiante no inscrito al learning path del setup
+
+            Estudiante estudiante2 = new Estudiante("Andres", "password", "andres@example.com");
+
+            // Inscribir al estudiante un learning path generico
+
+            LearningPath learningPath2 = new LearningPath(
+                "Learning Path Inicial",
+                Nivel.Intermedio,
+                "Camino de aprendizaje de prueba",
+                "Objetivo general",
+                120,
+                profesor,
+                4.5f,
+                new ArrayList<>()
+            );
+
+            learningPath2.inscripcionEstudiante(estudiante2);
+
+            // Inscribir al estudiante al examen
+
+            assertThrows(UnsupportedOperationException.class, () -> examen.inscripcionEstudiante(estudiante2));
+
+            
+            }
 
 
     @Test

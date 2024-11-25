@@ -70,7 +70,11 @@ public class Quiz extends Actividad {
     @Override
     public void responder(Estudiante estudiante, String respuesta) {
         if (estudiante == null) {
-            throw new SecurityException("Se requiere un estudiante para completar el quiz.");
+            throw new IllegalArgumentException("Se requiere un estudiante para completar el quiz.");
+        }
+
+        if (respuesta == null || respuesta.isEmpty()) {
+            throw new IllegalArgumentException("Las respuestas no pueden estar vacías.");
         }
     
         Status estadoEstudiante = estadosPorEstudiante.get(estudiante); // Obtener el estado del estudiante
@@ -119,6 +123,7 @@ public class Quiz extends Actividad {
         if (calificacionObtenida >= calificacionMinima) {
             System.out.println("El quiz fue completado exitosamente con una calificación de " + calificacionObtenida + "%.");
             setStatusParaEstudiante(estudiante, Status.Completado); // Cambiar el estado del estudiante a completado, ya que aprobó el quiz 
+            // Agregar el quiz a la lista de actividades completadas del estudiante falta
         } else {
             estadosPorEstudiante.put(estudiante, Status.noExitosa);
             System.out.println("El quiz no fue aprobado. Calificación obtenida: " + calificacionObtenida + "%.");
@@ -129,6 +134,11 @@ public class Quiz extends Actividad {
     // Método para verificar si el quiz es exitoso (cumple la calificación mínima)
     @Override
     public boolean esExitosa(Estudiante estudiante) {
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+
         Status estadoActual = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
 
         if (estadoActual == Status.Exitosa || estadoActual == Status.Completado) { // Si el estado es exitoso o completado, realmente exitoso y completado son lo mismo para nostros a fin de cuentas, el estudiante aprobó el quiz, por lo que consideramos ambos casos para no confundir al usuario de todas maneras
@@ -137,7 +147,7 @@ public class Quiz extends Actividad {
             setStatusParaEstudiante(estudiante, Status.Completado); // Cambiar el estado del estudiante a completado
             return true; // El quiz fue exitoso
         } else {
-            System.out.println("El quiz no fue aprobado por: " + estudiante.getNombre()); // Mensaje de confirmación
+            System.out.println("El quiz no fue aprobado o realizado por: " + estudiante.getNombre()); // Mensaje de confirmación
             return false; // El quiz no fue exitoso
         }
     }
@@ -145,7 +155,14 @@ public class Quiz extends Actividad {
     // Método para reintentar el quiz
     @Override
     public void reintentar(Estudiante estudiante) {
+
+        if (estudiante == null) { // Verificar si el estudiante es nulo
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+        
+   
         Status estadoActual = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
+       
         if (estadoActual == Status.Exitosa || estadoActual == Status.Completado) { // Si el estado es exitoso o completado
             throw new UnsupportedOperationException("El quiz ya fue completado exitosamente y no se puede repetir."); // No se puede reintentar si ya se completó
         } else { // Si el estado es incompleto o no exitoso
@@ -174,6 +191,7 @@ public class Quiz extends Actividad {
             throw new IllegalArgumentException("La pregunta no puede ser nula.");
         }
 
+
         listaPreguntas.add(pregunta);
     }
 
@@ -187,6 +205,10 @@ public class Quiz extends Actividad {
         // Si la cantidad de preguntas es 0 o 1, no se puede eliminar más porque teiene que haber al menos una pregunta
         if (listaPreguntas.size() <= 1) {
             throw new UnsupportedOperationException("El quiz debe tener al menos una pregunta.");
+        }
+
+        if (!listaPreguntas.contains(pregunta)) {
+            throw new UnsupportedOperationException("La pregunta no está en el quiz.");
         }
 
         listaPreguntas.remove(pregunta);
@@ -210,12 +232,20 @@ public class Quiz extends Actividad {
     
         LearningPath learningPath = estudiante.getLearningPathActual(); // Obtener el Learning Path actual del estudiante
     
+        if (learningPath == null) { // Verificar si el estudiante no tiene un Learning Path
+            throw new UnsupportedOperationException("El estudiante no tiene un Learning Path.");
+        }
+
         if (!learningPath.verificarSiInscrito(estudiante)) { // Verificar si el estudiante está inscrito en un Learning Path
-            throw new UnsupportedOperationException("El quiz es obligatorio y el estudiante no está inscrito en un Learning Path.");
+            throw new UnsupportedOperationException("El estudiante no está inscrito en un Learning Path.");
+        }
+
+        if (learningPath.getLearningPathDeUnaActividad(this) == false) { // Verificar si el estudiante no está inscrito en el Learning Path de la actividad
+            throw new UnsupportedOperationException("El estudiante no está inscrito en el Learning Path de la actividad.");
         }
     
         estadosPorEstudiante.put(estudiante, Status.Incompleto); // Agregar el estudiante al quiz con estado Incompleto
         calificacionesObtenidas.put(estudiante, 0.0); // Agregar el estudiante al quiz con calificación 0
-        System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en el quiz."); // Mensaje de confirmación
+        System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en la actividad."); // Mensaje de confirmación
     }
 }

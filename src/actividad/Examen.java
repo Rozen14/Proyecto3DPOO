@@ -105,14 +105,22 @@ public class Examen extends Actividad {
 
         LearningPath learningPath = estudiante.getLearningPathActual(); // Obtener el Learning Path actual del estudiante
     
+        if (learningPath == null) { // Verificar si el Learning Path es nulo
+            throw new UnsupportedOperationException("El estudiante no tiene un Learning Path.");
+        }
+
         if (!learningPath.verificarSiInscrito(estudiante)) { // Verificar si el estudiante está inscrito en un Learning Path
             throw new UnsupportedOperationException("El examen es obligatorio y el estudiante no está inscrito en un Learning Path.");
+        }
+
+        if (learningPath.getLearningPathDeUnaActividad(this) == false) { // Verificar si el Learning Path tiene la actividad actual
+            throw new UnsupportedOperationException("El examen no está en el Learning Path del estudiante.");
         }
         
 
         estadosPorEstudiante.put(estudiante, Status.Incompleto); // Agregar el estudiante al examen con estado Incompleto
         calificacionesObtenidas.put(estudiante, 0.0); // Agregar el estudiante al examen con calificación 0
-        System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en el examen."); // Mensaje de confirmación
+        System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en la actividad."); // Mensaje de confirmación
 
     }
 

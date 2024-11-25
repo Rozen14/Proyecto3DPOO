@@ -51,26 +51,31 @@ public class PersistenciaActividad {
         tarea.getSubmissionMethod()+","+ 
         tarea.getCreador().getNombre());
     } 
-    else if (actividad instanceof Quiz)
-    {
-        Quiz quiz = (Quiz) actividad;   
-
-        writer.write("Quiz,"+ actividad.getDescripcion()+","+
-        quiz.getNivelDificultad()+","+
-        quiz.getObjetivo()+","+
-        quiz.getDuracionEsperada()+","+
-        quiz.getVersion()+","+
-        (quiz.getFechaLimite() != null ? actividad.getFechaLimite().format(formatter):"")+","+
-        (quiz.getFechaInicio() != null ? actividad.getFechaInicio().format(formatter):"")+","+
-        estadosPorEstudianteStr+","+
-        (quiz.esObligatoria()? "SI" : "NO")+","+
-        quiz.getActividadesPreviasSugeridas().stream().map(Actividad::getDescripcion).collect(Collectors.joining(","))+","+ 
-        quiz.getActividadesSeguimientoRecomendadas().stream().map(Actividad::getDescripcion).collect(Collectors.joining(","))+","+
-        quiz.getListaPreguntas().stream().map(Pregunta::getEnunciado).collect(Collectors.joining(","))+","+ // Se sacan las preguntas y se juntan con una coma
-        quiz.getCalificacionMinima()+","+
-        quiz.getCalificacionObtenida()+","+
-        quiz.getCreador().getNombre());
-    } 
+    else if (actividad instanceof Quiz) {
+        Quiz quiz = (Quiz) actividad;
+    
+        String calificacionesObtenidasStr = quiz.getCalificacionesObtenidas().entrySet().stream()
+            .map(entry -> entry.getKey().getCorreo() + ":" + entry.getValue())
+            .collect(Collectors.joining(";"));
+    
+        writer.write("Quiz," + actividad.getDescripcion() + "," +
+                quiz.getNivelDificultad() + "," +
+                quiz.getObjetivo() + "," +
+                quiz.getDuracionEsperada() + "," +
+                quiz.getVersion() + "," +
+                (quiz.getFechaLimite() != null ? actividad.getFechaLimite().format(formatter) : "") + "," +
+                (quiz.getFechaInicio() != null ? actividad.getFechaInicio().format(formatter) : "") + "," +
+                estadosPorEstudianteStr + "," +
+                (quiz.esObligatoria() ? "SI" : "NO") + "," +
+                quiz.getActividadesPreviasSugeridas().stream().map(Actividad::getDescripcion).collect(Collectors.joining(",")) + "," +
+                quiz.getActividadesSeguimientoRecomendadas().stream().map(Actividad::getDescripcion).collect(Collectors.joining(",")) + "," +
+                quiz.getListaPreguntas().stream().map(Pregunta::getEnunciado).collect(Collectors.joining(",")) + "," +
+                quiz.getCalificacionMinima() + "," +
+                calificacionesObtenidasStr + "," +
+                quiz.getCreador().getNombre());
+    
+        writer.newLine();
+    }
     else if (actividad instanceof RecursoEducativo)
     {
         RecursoEducativo recurso = (RecursoEducativo) actividad;
@@ -224,7 +229,12 @@ public class PersistenciaActividad {
         List<Actividad> actividadesSeguimientoRecomendadas = cargarActividades(datos[11], creador, formatter);
         List<PreguntaCerrada> listaPreguntas = PersistenciaPregunta.cargarPreguntasCerradas(datos[12]);
         double calificacionMinima = Double.parseDouble(datos[13]);
-        double calificacionObtenida = Double.parseDouble(datos[14]);
+        Map<Estudiante, Double> calificacionesObtenidas = Arrays.stream(datos[14].split(";"))
+        .map(par -> par.split(":"))
+        .collect(Collectors.toMap(
+                par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
+                par -> Double.parseDouble(par[1])
+        ));
         String nombreCreador = datos[15]; // No se usa en la creación del quiz porque ya se tiene el profesor
 
         Quiz quiz= new Quiz(descripcion, nivel, objetivo, duracion, version, fechaLimite, estadosPorEstudiante, obligatoria, listaPreguntas, calificacionMinima, creador, actividadesPreviasSugeridas, actividadesSeguimientoRecomendadas);
@@ -232,7 +242,7 @@ public class PersistenciaActividad {
         // Asignar los valores que no entran al constructor directamente como calificacion obtenida y fehca de inicio
         
         quiz.setFechaInicio(fechaInicio);
-        quiz.setCalificacionObtenida(calificacionObtenida);
+        quiz.setCalificacionesObtenidas(calificacionesObtenidas);
         quiz.setListaPreguntas(listaPreguntas);
 
 

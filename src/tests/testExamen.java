@@ -128,6 +128,31 @@ public class testExamen {
     }   
 
     @Test
+    public void testGetCalificacionesObtenidas(){
+
+        // Deberia ser un hashmap vacio al inicio
+
+        assertEquals(new HashMap<>(), examen.getCalificacionesObtenidas());
+
+    }
+
+    @Test
+    public void testSetCalificacionesObtenidas(){
+
+        // Crear un nuevo hashmap de calificaciones obtenidas
+
+        Map<Estudiante, Double> calificacionesObtenidas = new HashMap<>();
+
+        calificacionesObtenidas.put(estudiante, 100.0);
+
+        examen.setCalificacionesObtenidas(calificacionesObtenidas);
+
+        assertEquals(calificacionesObtenidas, examen.getCalificacionesObtenidas());
+
+    }
+
+
+    @Test
 
     public void testSetListaPreguntas(){
 
@@ -207,6 +232,15 @@ public class testExamen {
         assertEquals(respuestasAbiertas, examen.getRespuestasAbiertas());
 
     }
+    
+    @Test
+    public void testInscripcionEstudianteValido(){
+
+        // Crear un nuevo estudiante no inscrito al learning path ni examen
+
+        Estudiante estudiante2 = new Estudiante("Pedro", "password", "pedro@example.com", new ArrayList<>(), new ArrayList<>());
+        }
+
 
     @Test
 

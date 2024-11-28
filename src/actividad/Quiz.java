@@ -65,10 +65,19 @@ public class Quiz extends Actividad {
         this.calificacionesObtenidas = calificacionesObtenidas;
     }
 
+
     
     // Método para responder al quiz completo
     @Override
     public void responder(Estudiante estudiante, String respuesta) {
+
+        // Condiciones que deberia cumplir el estudiante para responder el quiz
+        // 1. El estudiante no puede ser nulo (if estudiante == null)
+        // 2. Las respuestas no pueden estar vacías (if respuesta == null || respuesta.isEmpty())
+        // 3. El quiz no puede haber sido completado previamente (if estadoEstudiante == Status.Completado)
+        // El resto de condiciones se debieron ya haber cumplido cuando el estudiante se inscribió al quiz
+
+
         if (estudiante == null) {
             throw new IllegalArgumentException("Se requiere un estudiante para completar el quiz.");
         }
@@ -95,7 +104,7 @@ public class Quiz extends Actividad {
             String opcionSeleccionada = partes[1].trim(); // Opción seleccionada por el estudiante, el trim lo que hace es eliminar los espacios en blanco al inicio y al final de la cadena
     
             System.out.println("Opcion desglosada:" + opcionSeleccionada); // Mostrar la opción seleccionada por el estudiante
-            // Asegurarse de que el índice de la pregunta sea válido
+            // Asegurarse de que el índice de la pregunta sea válido, en caso de que no sea válido se mostrará un mensaje de error por formato incorrecto
             if (indicePregunta >= 0 && indicePregunta < listaPreguntas.size()) {
                 PreguntaCerrada pregunta = listaPreguntas.get(indicePregunta);
     
@@ -141,7 +150,7 @@ public class Quiz extends Actividad {
 
         Status estadoActual = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
 
-        if (estadoActual == Status.Exitosa || estadoActual == Status.Completado) { // Si el estado es exitoso o completado, realmente exitoso y completado son lo mismo para nostros a fin de cuentas, el estudiante aprobó el quiz, por lo que consideramos ambos casos para no confundir al usuario de todas maneras
+        if (estadoActual == Status.Completado) { // Si el estado es exitoso o completado, realmente exitoso y completado son lo mismo para nostros a fin de cuentas, el estudiante aprobó el quiz, por lo que consideramos ambos casos para no confundir al usuario de todas maneras
             System.out.println("El quiz fue completado exitosamente por: " + estudiante.getNombre());
             estudiante.agregarActividadCompletada(this); // Agregar el quiz a la lista de actividades completadas del estudiante
             setStatusParaEstudiante(estudiante, Status.Completado); // Cambiar el estado del estudiante a completado
@@ -154,8 +163,12 @@ public class Quiz extends Actividad {
 
     // Método para reintentar el quiz
     @Override
-    public void reintentar(Estudiante estudiante) {
-
+    public void reintentar(Estudiante estudiante) { // El metodo de reintentar el quiz no lo incicia en si, sino que lo reinicia para que el estudiante pueda responderlo nuevamente, en la interfaz esto se vería como si el estudiante no hubiera respondido el quiz para evitar confusiones, si no pasas sigue intentando. Por lo tanto, el estudiante en si no tiene que interactuar con este metodo para responder el quiz, sino que se le mostrará la opción de responder el quiz nuevamente.
+        // Condiciones que deberia cumplir el estudiante para reintentar el quiz
+        // 1. El estudiante no puede ser nulo (if estudiante == null)
+        // 2. El quiz no puede haber sido completado previamente (if estadoEstudiante == Status.Completado), es decir, debe tener un estado incompleto o no exitoso. Teoricamente si el quiz no ha sido iniciado no deberia poder reintentarlo, pero por simplicidad se permitirá ya que realmente es lo mismo que iniciar el quiz.
+        // El resto de condiciones se debieron ya haber cumplido cuando el estudiante se inscribió al quiz
+        // No se agregara condicion para verificar si el estudiante esta inscrito al quiz ya que el estudiante en si no podra interactuar con este metodo, sino que se le mostrara la opción de responder el quiz nuevamente en la interfaz, por lo que si no esta inscrito en primer lugar no se correria este metodo.
         if (estudiante == null) { // Verificar si el estudiante es nulo
             throw new IllegalArgumentException("El estudiante no puede ser nulo.");
         }
@@ -163,7 +176,7 @@ public class Quiz extends Actividad {
    
         Status estadoActual = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
        
-        if (estadoActual == Status.Exitosa || estadoActual == Status.Completado) { // Si el estado es exitoso o completado
+        if (estadoActual == Status.Completado) { // Si el estado es exitoso o completado
             throw new UnsupportedOperationException("El quiz ya fue completado exitosamente y no se puede repetir."); // No se puede reintentar si ya se completó
         } else { // Si el estado es incompleto o no exitoso
             System.out.println("El estudiante " + estudiante.getNombre() + " puede iniciar o volver a intentar el quiz."); // Mensaje de confirmación
@@ -173,14 +186,14 @@ public class Quiz extends Actividad {
                 pregunta.setEscogida(null); // Reiniciar la respuesta elegida
             }
 
-            setStatusParaEstudiante(estudiante, Status.Incompleto); // Cambiar el estado del estudiante a incompleto
+            setStatusParaEstudiante(estudiante, Status.Incompleto); // Cambiar el estado del estudiante a incompleto, esta es la condicion que se debe cumplir para responder en primer lugar
         }
     }
 
     // Implementación vacía del método evaluar, ya que no se requiere para Quiz
     @Override
         public void evaluar(Profesor profesor, Estudiante estudiante, LearningPath learningPath, double calificacionObtenida, boolean exitosa) {
-        // No se necesita implementación para Quiz
+        // No se necesita implementación para Quiz, lo que pasa es que es más facil hacer el metodo abstracto que hacerlos individuales para cada tipo de actividad, por lo que se deja vacío
         System.out.println("El profesor " + profesor.getNombre() + " no puede evaluar el quiz.");
     }
 
@@ -196,6 +209,7 @@ public class Quiz extends Actividad {
     }
 
     // Método para eliminar una pregunta del quiz
+    // El manejo de los permisos se hara desde las clases que invocan este método, por simplicidad.
 
     public void eliminarPregunta(PreguntaCerrada pregunta) {
         if (pregunta == null) {
@@ -218,6 +232,13 @@ public class Quiz extends Actividad {
 
     public void inscripcionEstudiante(Estudiante estudiante) {
 
+        // Condiciones que deberia cumplir el estudiante para inscribirse al quiz
+        // 1. El estudiante no puede ser nulo (if estudiante == null)
+        // 2. El estudiante no puede estar inscrito previamente (if estadosPorEstudiante.containsKey(estudiante))
+        // 3. El estudiante debe tener un Learning Path en si(if learningPath == null)
+        // 4. El estudiante debe estar inscrito en el Learning Path de la actividad (if learningPath.verificarInscripcionYActividad(estudiante, this) == false)
+        // El resto de condiciones se debieron ya haber cumplido cuando el estudiante se inscribió al learning path
+
         if (estudiante == null) { // Verificar si el estudiante es nulo
             throw new IllegalArgumentException("El estudiante no puede ser nulo.");
         }
@@ -226,21 +247,14 @@ public class Quiz extends Actividad {
             throw new UnsupportedOperationException("El estudiante ya está inscrito en el quiz.");
         }
     
-        if (fechaLimite.isBefore(LocalDateTime.now())) { // Verificar si la fecha límite ya pasó
-            throw new UnsupportedOperationException("La fecha límite para inscribirse en el quiz ha pasado.");
-        }
-    
         LearningPath learningPath = estudiante.getLearningPathActual(); // Obtener el Learning Path actual del estudiante
     
         if (learningPath == null) { // Verificar si el estudiante no tiene un Learning Path
             throw new UnsupportedOperationException("El estudiante no tiene un Learning Path.");
         }
 
-        if (!learningPath.verificarSiInscrito(estudiante)) { // Verificar si el estudiante está inscrito en un Learning Path
-            throw new UnsupportedOperationException("El estudiante no está inscrito en un Learning Path.");
-        }
 
-        if (learningPath.getLearningPathDeUnaActividad(this) == false) { // Verificar si el estudiante no está inscrito en el Learning Path de la actividad
+        if (learningPath.verificarInscripcionYActividad(estudiante, this) == false) { // Verificar si el estudiante no está inscrito en el Learning Path de la actividad
             throw new UnsupportedOperationException("El estudiante no está inscrito en el Learning Path de la actividad.");
         }
     

@@ -231,9 +231,16 @@ public class LearningPath {
         return this.estudiantesInscritos.contains(estudiante);
     } // verificarSiInscrito se debe utilizar para verificar si un estudiante ya está inscrito en un learning path
 
-    public boolean getLearningPathDeUnaActividad(Actividad actividad) {
-        return this.listaActividades.contains(actividad);
-    } // getLearningPathDeUnaActividad se debe utilizar para obtener el learning path al que pertenece una actividad
+    public boolean verificarInscripcionYActividad(Estudiante estudiante, Actividad actividad) {
+        if (!verificarSiInscrito(estudiante)) { // Método ya existente que verifica si el estudiante está inscrito
+            return false; // Estudiante no está inscrito
+        }
+    
+        // Verificar si la actividad pertenece a este LearningPath
+        return listaActividades.contains(actividad); // `listActividades` es la lista de actividades del LearningPath
+    }
+    
+    
     public boolean verificarSiHayInscritos() {
         return !this.estudiantesInscritos.isEmpty();
     } // verificarSiHayInscritos se debe utilizar para verificar si hay estudiantes inscritos en un learning path

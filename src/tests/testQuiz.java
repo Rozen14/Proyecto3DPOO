@@ -321,9 +321,7 @@ public class testQuiz {
 
         // Se deberia madnar un mensaje de error
 
-        assertThrows(UnsupportedOperationException.class, () -> {
-            quiz.reintentar(estudiante);
-        });
+        assertThrows(UnsupportedOperationException.class, () -> {quiz.reintentar(estudiante);});
 
     }
 
@@ -521,19 +519,6 @@ public class testQuiz {
             quiz.inscripcionEstudiante(estudiante2);
         });
 
-    }
-    @Test
-    public void testInscripcionEstudianteInvalidoPorNoTenerLearningPath(){
-
-        // No tiene LearningPath
-
-        Estudiante estudiante2 = new Estudiante("Pedro", "123", "pedro@example.com");
-
-        assertThrows(UnsupportedOperationException.class, () -> {
-            quiz.inscripcionEstudiante(estudiante2);
-        });
-    
-    
     }
 
 

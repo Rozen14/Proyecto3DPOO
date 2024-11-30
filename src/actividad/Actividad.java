@@ -97,7 +97,7 @@ public abstract class Actividad { // Clase abstracta Actividad
 
     // Obtener el estado de la actividad para un estudiante específico
     public Status getStatusParaEstudiante(Estudiante estudiante) {
-        return estadosPorEstudiante.getOrDefault(estudiante, Status.Incompleto);
+        return estadosPorEstudiante.get(estudiante);
     }
 
     // Obtener todos los estados por estudiante (para revisión general del profesor)

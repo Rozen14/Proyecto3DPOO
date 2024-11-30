@@ -113,9 +113,9 @@ public class Examen extends Actividad {
             throw new UnsupportedOperationException("El examen es obligatorio y el estudiante no está inscrito en un Learning Path.");
         }
 
-        if (learningPath.getLearningPathDeUnaActividad(this) == false) { // Verificar si el Learning Path tiene la actividad actual
+        if (learningPath.verificarInscripcionYActividad(estudiante, this) == false) { // Verificar si el Learning Path tiene la actividad actual
             throw new UnsupportedOperationException("El examen no está en el Learning Path del estudiante.");
-        }
+        } // Mato dos pajaros de un tiro verificando si el estudiante está inscrito en el learning path y si la actividad está en el learning path
         
 
         estadosPorEstudiante.put(estudiante, Status.Incompleto); // Agregar el estudiante al examen con estado Incompleto

@@ -40,12 +40,8 @@ public class testPregunta {
 
     @Test
     public void testConstructorEnunciadoInvalido() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new PreguntaConcreta(Tipo.Abierta, null);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new PreguntaConcreta(Tipo.Abierta, "");
-        });
+        assertThrows(IllegalArgumentException.class, () -> {new PreguntaConcreta(Tipo.Abierta, null);});
+        assertThrows(IllegalArgumentException.class, () -> {new PreguntaConcreta(Tipo.Abierta, "");});
     }
 
     @Test
@@ -58,12 +54,9 @@ public class testPregunta {
     @Test
     public void testSetEnunciadoInvalido() {
         Pregunta pregunta = new PreguntaConcreta(Tipo.Abierta, "Enunciado");
-        assertThrows(IllegalArgumentException.class, () -> {
-            pregunta.setEnunciado(null);
+        assertThrows(IllegalArgumentException.class, () -> {pregunta.setEnunciado(null);
         });
-        assertThrows(IllegalArgumentException.class, () -> {
-            pregunta.setEnunciado("");
-        });
+        assertThrows(IllegalArgumentException.class, () -> {pregunta.setEnunciado("");});
     }
 
     @Test
@@ -75,10 +68,7 @@ public class testPregunta {
 
     @Test
     public void testSetTipoInvalido() {
-        Pregunta pregunta = new PreguntaConcreta(Tipo.Abierta, "Enunciado");
-        assertThrows(IllegalArgumentException.class, () -> {
-            pregunta.setTipo(null);
-        });
+        Pregunta pregunta = new PreguntaConcreta(Tipo.Abierta, "Enunciado");assertThrows(IllegalArgumentException.class, () -> {pregunta.setTipo(null);});
     }
 
 

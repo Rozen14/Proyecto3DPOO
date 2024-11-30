@@ -118,6 +118,7 @@ public class Quiz extends Actividad {
                 System.out.println("Pregunta " + (indicePregunta + 1) + ": " + pregunta.getRetroalimentacion()); // Mostrar la retroalimentación de la pregunta
             } else {
                 System.out.println("Índice de pregunta no válido: " + (indicePregunta + 1)); // Mostrar mensaje de error si el índice de pregunta no es válido
+                // No se tira una excepcion porque la idea es que el estudiante no lo saque por el error de formato, sino que se le muestre en la interfaz para que lo corrija
             }
         }
     
@@ -173,9 +174,15 @@ public class Quiz extends Actividad {
             throw new IllegalArgumentException("El estudiante no puede ser nulo.");
         }
         
-   
+        // si el estudiante esta inscrito sacar su estado
+
+        if (estadosPorEstudiante.containsKey(estudiante) == false) { // Verificar si el estudiante no está inscrito
+            throw new UnsupportedOperationException("El estudiante no está inscrito en el quiz.");
+        }
+
         Status estadoActual = getStatusParaEstudiante(estudiante); // Obtener el estado del estudiante
-       
+    
+        
         if (estadoActual == Status.Completado) { // Si el estado es exitoso o completado
             throw new UnsupportedOperationException("El quiz ya fue completado exitosamente y no se puede repetir."); // No se puede reintentar si ya se completó
         } else { // Si el estado es incompleto o no exitoso
@@ -262,4 +269,5 @@ public class Quiz extends Actividad {
         calificacionesObtenidas.put(estudiante, 0.0); // Agregar el estudiante al quiz con calificación 0
         System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en la actividad."); // Mensaje de confirmación
     }
+
 }

@@ -295,6 +295,55 @@ public class testQuiz {
         assertEquals(100.0, quiz.getCalificacionObtenida(estudiante));
     }
 
+    @Test 
+    public void testReintentarInvalidoPorNoEstarInscritoEnQuizNiLearningPath(){
+
+        // Estudiante no inscrito en el quiz
+
+        Estudiante estudiante2 = new Estudiante("Pedro", "123", "pedro@example.com");
+
+        // Inscribirlo al LearningPath
+        // Se deberia madnar un mensaje de error
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            quiz.reintentar(estudiante2);
+        });
+
+
+    }
+
+    @Test
+    public void testReintentarInvalidoPorEstudianteNoInscritoEnElLearningPathCorrecto(){
+
+        // Estudiante no inscrito en el LearningPath correcto
+
+        Estudiante estudiante2 = new Estudiante("Pedro", "123", "pedro@example.com");
+
+        // Inscribirlo a un LearningPath incorrecto
+
+        LearningPath learningPath2 = new LearningPath(
+            "Learning Path de Prueba 2",
+            Nivel.Intermedio,
+            "Camino de aprendizaje de prueba 2",
+            "Objetivo general 2",
+            120,
+            profesor,
+            4.5f,
+            new ArrayList<>()
+        );
+
+        learningPath2.inscripcionEstudiante(estudiante2);
+
+        // Inscribirlo al quiz va a mandar un mensaje de error, entonces intentemos reintenar el quiz
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            quiz.reintentar(estudiante2);
+        });
+
+
+
+    }
+
     @Test
     public void testReintentarInvalidoPorEstudianteNulo(){
 

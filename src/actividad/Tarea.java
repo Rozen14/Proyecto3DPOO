@@ -104,4 +104,13 @@ public class Tarea extends Actividad {
         estadosPorEstudiante.put(estudiante, Status.Incompleto); // Se reinicia el estado de la tarea 
     }
 
+    // Método para inscribri al estudiante en la tarea
+
+    public void inscripcionEstudiante(Estudiante estudiante) {
+        if (estadosPorEstudiante.containsKey(estudiante)) {
+            throw new IllegalArgumentException("El estudiante ya está inscrito en la tarea.");
+        }
+        estadosPorEstudiante.put(estudiante, Status.Incompleto);
+    }
+
 }

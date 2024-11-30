@@ -17,11 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors; // Importar la clase Collectors para utilizar el método joining, el metodo joining se usara para unir las descripciones de las actividades completadas y asi guardarlas en el archivo de texto
 
 import actividad.*;
-
-import actividad.Nivel;
-
-import actividad.Status;
-
 import usuario.Estudiante;
 import usuario.Profesor;
 import persistencia.*;
@@ -64,7 +59,16 @@ public class LearningPath {
         this.progreso = 0;
         this.listaActividadesCompletadasConDup = new HashMap<>();
         this.listaActividadesCompletadas = new HashMap<>();
+
+        // Verificar si la lista de actividades no está vacía y si tiene al menos una actividad obligatoria
+        if (!listaActividades.isEmpty() && !tieneActividadObligatoria()) {
+            throw new IllegalArgumentException("El Learning Path debe tener al menos una actividad obligatoria.");
+        }
     }
+
+
+
+    // Verificar que al menos una actividad sea obligatoria
 
     // Getters y Setters
     public String getTitulo() { // Obtener el titulo del Learning Path
@@ -164,14 +168,19 @@ public class LearningPath {
         return listaActividades;
     }
 
-    public void agregarActividad(Actividad actividad) { // Agregar una actividad a la lista de actividades del Learning Path
+    public void agregarActividad(Actividad actividad) {
         if (listaActividades.contains(actividad)) {
             throw new IllegalArgumentException("La actividad ya está en la lista de actividades del Learning Path.");
-        } else {
-            listaActividades.add(actividad); // Agregar la actividad a la lista de actividades
-            this.fechaModificacion=LocalDateTime.now(); // Actualizar la fecha de modificacion
-            setVersion(); // Incrementar la versión del Learning Path
         }
+    
+        // Verificar si la lista de actividades está vacía y si la actividad que se va a agregar es obligatoria
+        if (listaActividades.isEmpty() && !actividad.esObligatoria()) {
+            throw new IllegalArgumentException("La primera actividad en el Learning Path debe ser obligatoria.");
+        }
+    
+        listaActividades.add(actividad); // Agregar la actividad a la lista de actividades
+        this.fechaModificacion = LocalDateTime.now(); // Actualizar la fecha de modificación
+        setVersion(); // Incrementar la versión del Learning Path
     }
 
     public void eliminarActividad(Actividad actividad) { // Eliminar una actividad de la lista de actividades del Learning Path 
@@ -457,6 +466,8 @@ public class LearningPath {
                         }
                     }
                 }
+
+                learningPath.validarActividadesObligatorias(); // Validar que haya al menos una actividad obligatoria
     
                 return learningPath; // Devolver el LearningPath cargado
             }

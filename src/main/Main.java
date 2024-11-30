@@ -179,6 +179,8 @@ public class Main {
         }
     }
 
+    // Prueba para ver si sirve el método de cargarLearningPaths
+
     // Método para sobrescribir datos de persistencia
     private static void guardarDatos(File archivoProfesores, File archivoEstudiantes, File archivoLearningPaths, Profesor profesor, Estudiante estudiante1, Estudiante estudiante2, LearningPath learningPath) throws IOException {
         PersistenciaProfesor.guardarProfesor(profesor, archivoProfesores); // Guardar el profesor en el archivo

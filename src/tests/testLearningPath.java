@@ -42,11 +42,14 @@ public class testLearningPath {
 
         actividades.add(actividad1);
         actividades.add(actividad2);
+        
 
 
         // Crear LearningPath
         learningPath = new LearningPath("Path Matemáticas", Nivel.Intermedio, "Descripción del path",
                 "Aprender álgebra", 120, profesor, 4.5f, actividades);
+
+        
     }
 
     // Test para stters y getters
@@ -92,8 +95,8 @@ public class testLearningPath {
     }
 
     @Test
-    public void testGetStatus() {
-        assertEquals(Status.Incompleto, learningPath.getStatus());
+    public void testGetStatusParaEstudiante() {
+        assertEquals(Status.Incompleto, learningPath.getStatusParaEstudiante(estudiante1));
     }
 
 
@@ -273,5 +276,15 @@ public class testLearningPath {
 
         assertEquals(learningPath.getTitulo(), cargado.getTitulo());
         assertEquals(learningPath.getNivelDificultad(), cargado.getNivelDificultad());
+        assertEquals(learningPath.getDescripcion(), cargado.getDescripcion());
+        assertEquals(learningPath.getObjetivos(), cargado.getObjetivos());
+        assertEquals(learningPath.getDuracionMinutos(), cargado.getDuracionMinutos());
+        assertEquals(learningPath.getVersion(), cargado.getVersion());
+        assertEquals(learningPath.getListaActividades().size(), cargado.getListaActividades().size());
+        assertEquals(learningPath.getFechaCreacion(), cargado.getFechaCreacion());
+        assertEquals(learningPath.getFechaModificacion(), cargado.getFechaModificacion());
+        assertEquals(learningPath.getStatusParaEstudiante(estudiante1), cargado.getStatusParaEstudiante(estudiante1));
+        
+
     }
 }

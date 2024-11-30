@@ -3,5 +3,20 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": []
+    "configurations": [
+        {
+            "type": "java",
+            "name": "testLearningPathPersistencia",
+            "request": "launch",
+            "mainClass": "ProyectoDPOOG5/tests.testLearningPathPersistencia",
+            "projectName": "ProyectoDPOOG5"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "ProyectoDPOOG5/main.Main",
+            "projectName": "ProyectoDPOOG5"
+        }
+    ]
 }

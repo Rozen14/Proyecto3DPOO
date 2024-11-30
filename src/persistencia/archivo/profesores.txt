@@ -1,0 +1,7 @@
+PROFESOR,Juan,1234,juan@example.com
+LEARNING_PATHS:
+LEARNING_PATH,Learning Path de Prueba
+ESTUDIANTES:
+ESTUDIANTE,Maria,maria@example.com
+ESTUDIANTE,Carlos,carlos@example.com
+FIN_PROFESOR

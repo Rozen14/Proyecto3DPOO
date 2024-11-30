@@ -8,7 +8,7 @@ public class PersistenciaProfesor {
 
     // Método para guardar un profesor en el archivo especificado
     public static void guardarProfesor(Profesor profesor, File archivo) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
             // Guardar datos básicos del profesor
             writer.write("PROFESOR," + profesor.getNombre() + "," + profesor.getContrasenia() + "," + profesor.getCorreo());
             writer.newLine();

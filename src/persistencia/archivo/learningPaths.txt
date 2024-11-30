@@ -1,0 +1,15 @@
+Learning Path de Prueba,Intermedio,Un camino de aprendizaje completo,Mejorar habilidades de programación,120,2024-11-30T05:36:35.481549000,2024-11-30T05:36:35.486548600,4,4.5,Juan
+ESTUDIANTES:
+maria@example.com:Maria:1234:Completado,100.0
+carlos@example.com:Carlos:5678:Incompleto,0.0
+ACTIVIDADES:
+Tarea,Tarea de Ejemplo,Intermedio,Resolver problemas de lógica,60,1.0,2024-12-07T05:36:35.483548300,2024-11-30T05:36:35.484550900,carlos@example.com:noExitosa;maria@example.com:Completado,SI,,,Correo,Juan
+Quiz,Quiz de Matemáticas Básicas,Principiante,Verificar habilidades básicas de matemáticas,30,1.0,2024-12-05T05:36:35.486548600,2024-11-30T05:36:35.486548600,carlos@example.com:noExitosa;maria@example.com:Completado,NO,,,¿Cuál es el resultado de 2+2?,60.0,carlos@example.com:0.0;maria@example.com:100.0,Juan
+
+Recurso,Video de Introducción a Java,Intermedio,Introducción a la programación en Java,20,1.0,2024-12-10T05:36:35.486548600,2024-11-30T05:36:35.486548600,carlos@example.com:Completado;maria@example.com:Completado,NO,,,video,Juan
+COMPLETADAS_CON_DUP:
+carlos@example.com:Tarea de Ejemplo,Video de Introducción a Java
+maria@example.com:Tarea de Ejemplo,Quiz de Matemáticas Básicas,Video de Introducción a Java
+COMPLETADAS_SIN_DUP:
+carlos@example.com:Tarea de Ejemplo,Video de Introducción a Java
+maria@example.com:Tarea de Ejemplo,Quiz de Matemáticas Básicas,Video de Introducción a Java

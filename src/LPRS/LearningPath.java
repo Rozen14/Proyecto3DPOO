@@ -31,18 +31,19 @@ public class LearningPath {
     protected LocalDateTime fechaCreacion; // Fecha de creacion del Learning Path
     protected LocalDateTime fechaModificacion; // Fecha de modificacion del Learning Path
     protected int version; // Version del Learning Path
-    protected Status status; // Status del Learning Path
+    protected Map<Estudiante, Status> status; // Status por estudiante
     protected List<Actividad> listaActividades; // Lista de actividades del Learning Path
     protected Profesor creador; // Creador del Learning Path
     protected float rating; // Rating del Learning Path
     protected List<Estudiante> estudiantesInscritos; // Lista de estudiantes inscritos en el Learning Path
-    protected float progreso; // Progreso del Learning Path
+    protected Map<Estudiante, Float> progreso; // Progreso por estudiante
     protected Map<Estudiante, List<Actividad>> listaActividadesCompletadasConDup; // Lista de actividades completadas con duplicados
     protected Map<Estudiante, List<Actividad>> listaActividadesCompletadas; // Lista de actividades completadas sin duplicados
     
 
     public LearningPath (String titulo, Nivel nivelDificultad, String descripcion, String objetivos, int duracionMinutos, Profesor creador, float rating, List<Actividad> listaActividades){
 
+        
         this.titulo=titulo; 
         this.nivelDificultad=nivelDificultad;
         this.descripcion=descripcion;
@@ -51,12 +52,12 @@ public class LearningPath {
         this.fechaCreacion=LocalDateTime.now();
         this.fechaModificacion=null;
         this.version=1;
-        this.status=Status.Incompleto;
+        this.status= new HashMap<>();
         this.listaActividades = listaActividades;
         this.creador=creador;
         this.rating = rating;
         this.estudiantesInscritos = new ArrayList<>();
-        this.progreso = 0;
+        this.progreso =  new HashMap<>();
         this.listaActividadesCompletadasConDup = new HashMap<>();
         this.listaActividadesCompletadas = new HashMap<>();
 
@@ -151,13 +152,21 @@ public class LearningPath {
     }
 
 
-    public Status getStatus() { // Obtener el status del Learning Path
+    public Map<Estudiante, Status> getStatusParaEstudiantes() { // Obtener el status del Learning Path
         return status;
     }
 
+    public Status getStatusParaEstudiante(Estudiante estudiante) { // Obtener el status del Learning Path
+        return status.get(estudiante);
+    }
 
-    public void setStatus(Status status) { // Establecer el status del Learning Path
-        this.status = status; 
+
+    public void setStatusParaEstudiante(Estudiante estudiante, Status status) { // Establecer el status del Learning Path
+        this.status.put(estudiante, status);
+    }
+
+    public void setStatusParaEstudiantes(Map<Estudiante, Status> status) { // Establecer el status del Learning Path
+        this.status = status;
     }
 
     public Profesor getCreador() { // Obtener el creador del Learning Path
@@ -233,6 +242,11 @@ public class LearningPath {
 
         estudiante.setLearningPathActual(this);
 
+        // Asignar el estado inicial del estudiante al Learning Path y el progreso
+
+        this.status.put(estudiante, Status.Incompleto);
+        this.progreso.put(estudiante, 0.0f);
+
     } // inscripcionEstudiante se debe utilizar cada vez que un estudiante se inscriba a un learning path
     // si esta variable es verdadera, no se puede crear, modificar, ni eliminar actividades del learning path
 
@@ -283,38 +297,33 @@ public class LearningPath {
 
     // Método para calcular el progreso de un estudiante
     public float calcularProgreso(Estudiante estudiante) {
-        // Contar todas las actividades obligatorias en el Learning Path
-        int totalObligatorias = (int) listaActividades.stream() // Se utiliza stream para obtener un flujo de datos de la lista de actividades
-            .filter(Actividad::esObligatoria) // Se utiliza filter para filtrar las actividades que son obligatorias
-            .count(); // Se utiliza count para contar cuántas actividades obligatorias hay
-
-        // Verificar que existen actividades obligatorias para evitar divisiones por cero
+        int totalObligatorias = (int) listaActividades.stream()
+            .filter(Actividad::esObligatoria)
+            .count();
+    
         if (totalObligatorias == 0) {
             System.out.println("No hay actividades obligatorias en el Learning Path.");
             return 0;
         }
-
-        // Obtener la lista de actividades completadas por el estudiante
-        List<Actividad> actividadesCompletadasPorEstudiante = listaActividadesCompletadas.get(estudiante);
-
-        // Contar cuántas actividades obligatorias ha completado exitosamente el estudiante
-        int completadasObligatorias = (int) actividadesCompletadasPorEstudiante.stream()
-            .filter(a -> a.esObligatoria() && a.esExitosa(estudiante)) // Se utiliza filter para filtrar las actividades obligatorias que han sido completadas exitosamente
-            .count(); // Se utiliza count para contar cuántas actividades obligatorias han sido completadas exitosamente
-            System.out.println("Actividades obligatorias completadas por el estudiante: " + completadasObligatorias);
-
-        // Calcular el progreso como un porcentaje
-        float progreso = (float) completadasObligatorias / totalObligatorias * 100;
-
-        // Si el progreso alcanza el 100%, marcar todas las actividades del Learning Path como completadas para el estudiante
-        if (progreso == 100) {
-            listaActividades.forEach(a -> a.setStatusParaEstudiante(estudiante, Status.Completado));
-        } else {
-            System.out.println("El progreso no ha alcanzado el 100% para el estudiante: " + estudiante.getNombre());
+    
+        List<Actividad> actividadesCompletadas = listaActividadesCompletadas.get(estudiante);
+    
+        int completadasObligatorias = (int) actividadesCompletadas.stream()
+            .filter(a -> a.esObligatoria() && a.esExitosa(estudiante))
+            .count();
+    
+        float p = (float) completadasObligatorias / totalObligatorias * 100;
+        progreso.put(estudiante, p);
+    
+        if (p == 100) {
+            setStatusParaEstudiante(estudiante, Status.Completado);
         }
-
-        System.out.println("Progreso calculado para " + estudiante.getNombre() + ": " + progreso + "%");
-        return progreso;
+    
+        return p;
+    }
+    
+    public float getProgresoParaEstudiante(Estudiante estudiante) {
+        return progreso.getOrDefault(estudiante, 0.0f);
     }
 
 
@@ -338,7 +347,7 @@ public class LearningPath {
 
     // Método para guardar el LearningPath en un archivo de texto plano
     public void guardarEnArchivo(File archivo) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) { // BufferedWriter se utiliza para escribir texto en un archivo, FileWriter se utiliza para escribir caracteres en un archivo, y append = true para agregar texto al final del archivo
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) { // BufferedWriter se utiliza para escribir texto en un archivo, FileWriter se utiliza para escribir caracteres en un archivo, y append = true para agregar texto al final del archivo
             // Guardar atributos básicos del LearningPath
             // Aqui el write esta guardando los atributos del LearningPath en el archivo de texto, se utiliza el metodo write para escribir texto en el archivo, y el metodo newLine para escribir una nueva linea en el archivo
             writer.write(this.titulo + "," + 
@@ -349,12 +358,28 @@ public class LearningPath {
                          (this.fechaCreacion != null ? this.fechaCreacion.format(formatter) : "") + "," +
                          (this.fechaModificacion != null ? this.fechaModificacion.format(formatter) : "") + "," +
                          this.version + "," +
-                         this.status + "," +
                          this.rating + "," +
-                         this.creador.getNombre() + "," +
-                         this.progreso);
+                         this.creador.getNombre());
             writer.newLine();
     
+
+            
+        // Guardar información de los estudiantes (incluye nombre y contraseña)
+        writer.write("ESTUDIANTES:");
+        writer.newLine();
+        for (Estudiante estudiante : estudiantesInscritos) {
+            String correo = estudiante.getCorreo();
+            String nombre = estudiante.getNombre();
+            String contrasena = estudiante.getContrasenia(); // Agregar contraseña
+            Status estado = status.getOrDefault(estudiante, Status.Incompleto);
+            float progresoEstudiante = progreso.getOrDefault(estudiante, 0.0f);
+
+            // Formato: correo:nombre:contraseña:estado,progreso
+            writer.write(correo + ":" + nombre + ":" + contrasena + ":" + estado + "," + progresoEstudiante);
+            writer.newLine();
+        }
+
+
             writer.write("ACTIVIDADES:"); // Etiqueta para indicar que se guardará la lista de actividades
             writer.newLine();
     
@@ -366,114 +391,125 @@ public class LearningPath {
             // Guardar lista de actividades completadas con duplicados para cada estudiante
             writer.write("COMPLETADAS_CON_DUP:");
             writer.newLine();
-            for (Map.Entry<Estudiante, List<Actividad>> entry : listaActividadesCompletadasConDup.entrySet()) { // Se utiliza entrySet para obtener un conjunto de pares clave-valor, en este caso se obtiene un conjunto de estudiantes y actividades completadas con duplicados
-                Estudiante estudiante = entry.getKey(); // Se obtiene la clave del par
-                writer.write(estudiante.getCorreo() + ":"); // Identificación del estudiante
-                for (Actividad actividad : entry.getValue()) { // Se obtiene el valor del par
-                    PersistenciaActividad.guardarActividad(actividad, writer); // Se guardan las actividades completadas con duplicados
-                }
-                writer.newLine(); // Nueva línea entre estudiantes
+            for (Map.Entry<Estudiante, List<Actividad>> entry : listaActividadesCompletadasConDup.entrySet()) {
+                Estudiante estudiante = entry.getKey();
+                writer.write(estudiante.getCorreo() + ":");
+                writer.write(entry.getValue().stream()
+                              .map(Actividad::getDescripcion) // Cambiar esto según los datos necesarios para cargar
+                              .collect(Collectors.joining(",")));
+                writer.newLine();
             }
     
-            // Guardar lista de actividades completadas sin duplicados para cada estudiante
-            writer.write("COMPLETADAS_SIN_DUP:"); // Etiqueta para indicar que se guardará la lista de actividades completadas sin duplicados
+            // Guardar actividades completadas sin duplicados
+            writer.write("COMPLETADAS_SIN_DUP:");
             writer.newLine();
-            for (Map.Entry<Estudiante, List<Actividad>> entry : listaActividadesCompletadas.entrySet()) { // Se utiliza entrySet para obtener un conjunto de pares clave-valor, en este caso se obtiene un conjunto de estudiantes y actividades completadas sin duplicados
-                Estudiante estudiante = entry.getKey(); // Se obtiene la clave del par
-                writer.write(estudiante.getCorreo() + ":"); // Identificación del estudiante
-                for (Actividad actividad : entry.getValue()) { // Se obtiene el valor del par
-                    PersistenciaActividad.guardarActividad(actividad, writer); // Se guardan las actividades completadas sin duplicados
-                }
-                writer.newLine(); // Nueva línea entre estudiantes
+            for (Map.Entry<Estudiante, List<Actividad>> entry : listaActividadesCompletadas.entrySet()) {
+                Estudiante estudiante = entry.getKey();
+                writer.write(estudiante.getCorreo() + ":");
+                writer.write(entry.getValue().stream()
+                            .map(Actividad::getDescripcion) // Cambiar esto según los datos necesarios para cargar
+                            .collect(Collectors.joining(",")));
+                writer.newLine();
             }
         }
     }
 
     // Método principal para cargar el LearningPath
-    public static LearningPath cargarDeArchivo(File archivo, Profesor creador) throws IOException { 
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) { // BufferedReader se utiliza para leer texto de un archivo, FileReader se utiliza para leer caracteres de un archivo
-            String linea = reader.readLine(); // Leer la primera línea del archivo
-            if (linea != null) { // Verificar si la línea no está vacía
-                String[] datos = linea.split(","); // Separar los datos por comas
-                
-                // Leer atributos en el mismo orden en que se guardaron
-                String titulo = datos[0]; 
+    public static LearningPath cargarDeArchivo(File archivo, Profesor creador) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            String linea = reader.readLine();
+            if (linea != null) {
+                // Leer atributos básicos del LearningPath
+                String[] datos = linea.split(",");
+                String titulo = datos[0];
                 Nivel nivelDificultad = Nivel.valueOf(datos[1]);
                 String descripcion = datos[2];
                 String objetivos = datos[3];
                 int duracionMinutos = Integer.parseInt(datos[4]);
-                LocalDateTime fechaCreacion = LocalDateTime.parse(datos[5], formatter); // Convertir la fecha de creación al formato correcto
-                LocalDateTime fechaModificacion = datos[6].isEmpty() ? null : LocalDateTime.parse(datos[6], formatter); // Convertir la fecha de modificación al formato correcto
-                int version = Integer.parseInt(datos[7]); 
-                Status status = Status.valueOf(datos[8]);
-                float rating = Float.parseFloat(datos[9]);
-                String nombreCreador = datos[10]; // Nombre del creador, este no se usa en si solo lo dejamos para tener la referencia
-                float progreso = Float.parseFloat(datos[11]);
+                LocalDateTime fechaCreacion = LocalDateTime.parse(datos[5], formatter);
+                LocalDateTime fechaModificacion = datos[6].isEmpty() ? null : LocalDateTime.parse(datos[6], formatter);
+                int version = Integer.parseInt(datos[7]);
+                float rating = Float.parseFloat(datos[8]);
     
-                // Crear el LearningPath con los valores cargados
                 LearningPath learningPath = new LearningPath(titulo, nivelDificultad, descripcion, objetivos, duracionMinutos, creador, rating, new ArrayList<>());
-                
-                // Establecer los atributos cargados que no se pasan al constructor
                 learningPath.fechaCreacion = fechaCreacion;
                 learningPath.fechaModificacion = fechaModificacion;
                 learningPath.version = version;
-                learningPath.status = status;
-                learningPath.progreso = progreso;
     
-                System.out.println("Learning Path cargado correctamente. Título: " + titulo); // Mensaje de éxito
-    
-                // Leer y cargar las listas adicionales
-                while ((linea = reader.readLine()) != null) { // Leer las siguientes líneas del archivo
-                    if (linea.equals("ACTIVIDADES:")) { // Verificar si se llegó a la lista de actividades
-                        System.out.println("Cargando ACTIVIDADES..."); // Mensaje de éxito
-                        while ((linea = reader.readLine()) != null && !linea.equals("COMPLETADAS_CON_DUP:")) { // Leer las actividades hasta llegar a la siguiente sección
-                            Actividad actividad = PersistenciaActividad.cargarActividad(linea, creador, formatter); // Cargar la actividad
-                            if (actividad != null) { // Verificar si la actividad se cargó correctamente
-                                learningPath.listaActividades.add(actividad); // Agregar la actividad a la lista de actividades
-                                System.out.println("Actividad cargada: " + actividad.getDescripcion()); // Mensaje de éxito
+                // Leer secciones
+                while ((linea = reader.readLine()) != null) {
+                    if (linea.equals("ESTUDIANTES:")) {
+                        while ((linea = reader.readLine()) != null && !linea.equals("ACTIVIDADES:")) {
+                            String[] partes = linea.split(":");
+                            String correo = partes[0];
+                            String nombre = partes[1];
+                            String contrasena = partes[2]; // Leer contraseña
+                            String[] estadoYProgreso = partes[3].split(",");
+                            Status estado = Status.valueOf(estadoYProgreso[0]);
+                            float progresoEstudiante = Float.parseFloat(estadoYProgreso[1]);
+                    
+                            // Crear el estudiante con todos los datos
+                            Estudiante estudiante = new Estudiante(nombre, correo, contrasena);
+                            learningPath.estudiantesInscritos.add(estudiante);
+                            learningPath.status.put(estudiante, estado);
+                            learningPath.progreso.put(estudiante, progresoEstudiante);
+                        }
+                    } 
+                    
+                    if (linea.equals("ACTIVIDADES:")) {
+                        while ((linea = reader.readLine()) != null && !linea.equals("COMPLETADAS_CON_DUP:")) {
+                            System.out.println("actividades");
+                            Actividad actividad = PersistenciaActividad.cargarActividad(linea, creador, formatter);
+                            if (actividad != null) {
+                                learningPath.listaActividades.add(actividad);
                             }
                         }
-                    } else if (linea.equals("COMPLETADAS_CON_DUP:")) { // Verificar si se llegó a la lista de actividades completadas con duplicados
-                        System.out.println("Cargando COMPLETADAS_CON_DUP..."); // Mensaje de éxito
-                        while ((linea = reader.readLine()) != null && !linea.equals("COMPLETADAS_SIN_DUP:")) { // Leer las actividades completadas con duplicados hasta llegar a la siguiente sección
-                            String[] partes = linea.split(":"); // Separar los datos por dos puntos
-                            String correoEstudiante = partes[0]; // Identificador del estudiante
-                            Estudiante estudiante = buscarEstudiantePorCorreo(learningPath.getEstudiantesInscritos(), correoEstudiante);  // Buscar el estudiante por correo, esto se hace para verificar si el estudiante se encuentra en la lista de inscritos y el identificador decidimos es su correo
-                            
-                            if (estudiante != null && partes.length > 1) { // Verificar si el estudiante se encontró y si hay actividades completadas
-                                List<Actividad> actividades = Arrays.stream(partes[1].split(",")) // Convertir las descripciones de actividades a una lista
-                                    .map(desc -> PersistenciaActividad.cargarActividad(desc, creador, formatter)) // Mapear las descripciones a actividades, esto significa que se convierten las descripciones de las actividades a objetos de tipo Actividad
-                                    .collect(Collectors.toList()); // Convertir el flujo de datos a una lista, esa vaina se hace porque ya lo queremos en forma de lista y Collectors es una clase que proporciona operaciones para secuencias de elementos y deja hacer eso
-                                learningPath.listaActividadesCompletadasConDup.put(estudiante, actividades);  // Agregar las actividades completadas con duplicados al mapa
-                                System.out.println("Actividades completadas (con duplicados) cargadas para: " + estudiante.getNombre()); // Mensaje de éxito
-                            }
-                        }
-                    } else if (linea.equals("COMPLETADAS_SIN_DUP:")) { // Verificar si se llegó a la lista de actividades completadas sin duplicados
-                        System.out.println("Cargando COMPLETADAS_SIN_DUP..."); // Mensaje de éxito
-                        while ((linea = reader.readLine()) != null) { // Leer las actividades completadas sin duplicados
-                            String[] partes = linea.split(":"); // Separar los datos por dos puntos
-                            String correoEstudiante = partes[0]; // Identificador del estudiante
-                            Estudiante estudiante = buscarEstudiantePorCorreo(learningPath.getEstudiantesInscritos(), correoEstudiante); // Buscar el estudiante por correo
-                            
-                            if (estudiante != null && partes.length > 1) { // Verificar si el estudiante se encontró y si hay actividades completadas
-                                List<Actividad> actividades = Arrays.stream(partes[1].split(",")) // Convertir las descripciones de actividades a una lista
-                                    .map(desc -> PersistenciaActividad.cargarActividad(desc, creador, formatter)) // Mapear las descripciones a actividades
-                                    .distinct() // Eliminar duplicados 
-                                    .collect(Collectors.toList()); // Convertir el flujo de datos a una lista
-                                learningPath.listaActividadesCompletadas.put(estudiante, actividades); // Agregar las actividades completadas sin duplicados al mapa
-                                System.out.println("Actividades completadas (sin duplicados) cargadas para: " + estudiante.getNombre()); // Mensaje de éxito
+                    } 
+                    
+                    if (linea.equals("COMPLETADAS_CON_DUP:")) {
+                        while ((linea = reader.readLine()) != null && !linea.equals("COMPLETADAS_SIN_DUP:")) {
+                            System.out.println("completadascondup");
+                            String[] partes = linea.split(":");
+                            String correo = partes[0];
+                            Estudiante estudiante = new Estudiante("", "", correo); // Crear solo con el correo
+                    
+                            if (partes.length > 1) {
+                                System.out.println("partes mayora  1");
+                                List<Actividad> actividades = Arrays.stream(partes[1].split(","))
+                                    .map(desc -> PersistenciaActividad.cargarActividad(desc, creador, formatter))
+                                    .collect(Collectors.toList());
+                                learningPath.listaActividadesCompletadasConDup.put(estudiante, actividades);
                             }
                         }
                     }
+                    
+                    if (linea.equals("COMPLETADAS_SIN_DUP:")) {
+                        while ((linea = reader.readLine()) != null) {
+                            String[] partes = linea.split(":");
+                            String correo = partes[0];
+                            Estudiante estudiante = new Estudiante("", "", correo); // Crear solo con el correo
+                    
+                            if (partes.length > 1) {
+                                List<Actividad> actividades = Arrays.stream(partes[1].split(","))
+                                
+                                    .map(desc -> PersistenciaActividad.cargarActividad(desc, creador, formatter))
+                                    .distinct()
+                                    .collect(Collectors.toList());
+                                    System.out.println("completadas con dup");
+                                learningPath.listaActividadesCompletadas.put(estudiante, actividades);
+                            }
+                        }
+                    }
+                    
                 }
-
-                learningPath.validarActividadesObligatorias(); // Validar que haya al menos una actividad obligatoria
     
-                return learningPath; // Devolver el LearningPath cargado
+                return learningPath;
             }
-        } 
-        return null; // Devolver null si no se pudo cargar el LearningPath
+        }
+        return null;
     }
+    
+
     
     // Método auxiliar para buscar estudiantes por correo en la lista de inscritos
     private static Estudiante buscarEstudiantePorCorreo(List<Estudiante> estudiantes, String correo) { 

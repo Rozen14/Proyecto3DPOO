@@ -155,13 +155,18 @@ public class PersistenciaActividad {
 
 // Método auxiliar para determinar el tipo de actividad y cargarla
     public static Actividad cargarActividad(String linea, Profesor creador, DateTimeFormatter formatter) {
+
+        System.out.println("Cargando actividad: " + linea); // Se imprime la actividad que se esta cargando
         String[] datos = linea.split(","); // Se separan los datos por coma, ya que los datos que se guardaron los separamos con la coma
-        System.out.println("Datos desglosados para la línea: " + linea); // Se imprime los datos desglosados 
+
+        
         for (int i = 0; i < datos.length; i++) { // Se recorre los datos
             System.out.println("datos[" + i + "]: " + datos[i]); // Se imprime los datos
         }
         String tipoActividad = datos[0]; // Se obtiene el tipo de actividad
-
+        // Sacar el tipo en si de la actividad, "Tarea de ..."
+        
+        
         switch (tipoActividad) { // Se hace un switch para determinar el tipo de actividad y dependiendo de eso cargarla
             case "Tarea":
                 return cargarTarea(datos, creador, formatter);

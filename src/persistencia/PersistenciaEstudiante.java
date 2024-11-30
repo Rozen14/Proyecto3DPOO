@@ -9,7 +9,7 @@ public class PersistenciaEstudiante {
 
     // Método para guardar un estudiante en el archivo especificado
     public static void guardarEstudiante(Estudiante estudiante, File archivo) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) { // Se crea un BufferedWriter para escribir en el archivo
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) { // Se crea un BufferedWriter para escribir en el archivo
             // Guardar datos básicos del estudiante
             writer.write("ESTUDIANTE," + estudiante.getNombre() + "," + estudiante.getContrasenia() + "," + estudiante.getCorreo()); // Se escribe en el archivo el nombre, contraseña y correo del estudiante
             writer.newLine(); // Se escribe un salto de línea

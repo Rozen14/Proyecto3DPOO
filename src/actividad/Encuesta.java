@@ -35,7 +35,7 @@ public class Encuesta extends Actividad {
         }
 
         Status estadoEstudiante = estadosPorEstudiante.get(estudiante); // Obtener el estado del estudiante
-
+ 
         if (estadoEstudiante == Status.Completado) {
             throw new UnsupportedOperationException("La encuesta ya ha sido completada."); // No se puede responder si ya se completó
         }

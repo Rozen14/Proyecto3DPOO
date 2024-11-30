@@ -52,6 +52,10 @@ public class RecursoEducativo extends Actividad {
     // Método para verificar si el recurso educativo es exitoso (revisado)
     @Override
     public boolean esExitosa(Estudiante estudiante) {
+
+        if (estudiante == null) { // Verificar que el estudiante no sea nulo
+            throw new SecurityException("Se requiere un estudiante para verificar si el recurso educativo fue completado exitosamente.");
+        }
         Status estadoEstudiante = estadosPorEstudiante.get(estudiante); // Obtener el estado del estudiante
         if (estadoEstudiante == Status.Exitosa || estadoEstudiante == Status.Completado) {
             System.out.println("El recurso educativo fue completado exitosamente por: " + estudiante.getNombre()); // Mostrar mensaje de éxito

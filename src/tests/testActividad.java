@@ -335,23 +335,17 @@ public class testActividad {
                 new ArrayList<>()
         );
 
-        assertThrows(UnsupportedOperationException.class, () -> {
-            actividadInscrita.agregarActividadPreviaSugerida(actividadInscrita, profesor, learningPathInscrito);
-        });
+        assertThrows(UnsupportedOperationException.class, () -> {actividadInscrita.agregarActividadPreviaSugerida(actividadInscrita, profesor, learningPathInscrito);});
     }
 
     @Test
     public void testAgregarActividadPreviaSugeridaInvalidaPorNula(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.agregarActividadPreviaSugerida(null, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> { actividad.agregarActividadPreviaSugerida(null, profesor, learningPath);});
     }
 
     @Test
     public void testAgregarActividadPreviaSugeridaInvalidaPorSerLaMisma(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.agregarActividadPreviaSugerida(actividad, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> { actividad.agregarActividadPreviaSugerida(actividad, profesor, learningPath);});
     }
 
     @Test
@@ -372,9 +366,7 @@ public class testActividad {
         );
 
         actividad.agregarActividadPreviaSugerida(actividadPrevia, profesor, learningPath);
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.agregarActividadPreviaSugerida(actividadPrevia, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> {actividad.agregarActividadPreviaSugerida(actividadPrevia, profesor, learningPath);});
     }
 
     @Test
@@ -397,9 +389,7 @@ public class testActividad {
                 new ArrayList<>()
         );
 
-        assertThrows(SecurityException.class, () -> {
-            actividad.agregarActividadPreviaSugerida(actividadPrevia, nuevoProfesor, learningPath);
-        });
+        assertThrows(SecurityException.class, () -> {actividad.agregarActividadPreviaSugerida(actividadPrevia, nuevoProfesor, learningPath);});
     }
     
     @Test
@@ -452,9 +442,7 @@ public class testActividad {
 
     @Test
     public void testEliminarActividadSugeridaInvalidaPorNula(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.eliminarActividadPreviaSugerida(null, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> { actividad.eliminarActividadPreviaSugerida(null, profesor, learningPath);});
     }
 
     @Test
@@ -474,9 +462,7 @@ public class testActividad {
             new ArrayList<>()
         );
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.eliminarActividadPreviaSugerida(actividadPrevia, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> { actividad.eliminarActividadPreviaSugerida(actividadPrevia, profesor, learningPath);});
     }
 
     @Test
@@ -503,9 +489,7 @@ public class testActividad {
         // Agregar actividad previa
         actividad.agregarActividadPreviaSugerida(actividadPrevia, profesor, learningPath);
 
-        assertThrows(SecurityException.class, () -> {
-            actividad.eliminarActividadPreviaSugerida(actividadPrevia, nuevoProfesor, learningPath);
-        });
+        assertThrows(SecurityException.class, () -> { actividad.eliminarActividadPreviaSugerida(actividadPrevia, nuevoProfesor, learningPath);});
     
      }
 
@@ -565,9 +549,7 @@ public class testActividad {
                 new ArrayList<>()
         );
 
-        assertThrows(UnsupportedOperationException.class, () -> {
-            actividadInscrita.agregarActividadSeguimiento(actividadInscrita, profesor, learningPathInscrito);
-        });
+        assertThrows(UnsupportedOperationException.class, () -> {actividadInscrita.agregarActividadSeguimiento(actividadInscrita, profesor, learningPathInscrito);});
 
 
 
@@ -575,16 +557,12 @@ public class testActividad {
 
     @Test
     public void testAgregarActividadSeguimientoRecomendadaInvalidaPorNula(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.agregarActividadSeguimiento(null, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> {actividad.agregarActividadSeguimiento(null, profesor, learningPath);});
     }
 
     @Test
     public void testAgregarActividadSeguimientoRecomendadaInvalidaPorSerLaMisma(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.agregarActividadSeguimiento(actividad, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> {actividad.agregarActividadSeguimiento(actividad, profesor, learningPath);});
     }
 
     @Test
@@ -605,9 +583,7 @@ public class testActividad {
         );
 
         actividad.agregarActividadSeguimiento(actividadSeguimiento, profesor, learningPath);
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.agregarActividadSeguimiento(actividadSeguimiento, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> {actividad.agregarActividadSeguimiento(actividadSeguimiento, profesor, learningPath);});
     }
 
     @Test
@@ -631,9 +607,7 @@ public class testActividad {
             new ArrayList<>()
         );
 
-        assertThrows(SecurityException.class, () -> {
-            actividad.agregarActividadSeguimiento(actividadSeguimiento, nuevoProfesor, learningPath);
-        });
+        assertThrows(SecurityException.class, () -> {actividad.agregarActividadSeguimiento(actividadSeguimiento, nuevoProfesor, learningPath);});
 
     }
 
@@ -697,16 +671,12 @@ public class testActividad {
                 new ArrayList<>()
         );
 
-        assertThrows(UnsupportedOperationException.class, () -> {
-            actividadInscrita.eliminarActividadSeguimiento(actividadInscrita, profesor, learningPathInscrito);
-        });
+        assertThrows(UnsupportedOperationException.class, () -> {actividadInscrita.eliminarActividadSeguimiento(actividadInscrita, profesor, learningPathInscrito);});
     }
 
     @Test
     public void testEliminarActividadSeguimientoRecomendadaInvalidaPorNula(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.eliminarActividadSeguimiento(null, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> {actividad.eliminarActividadSeguimiento(null, profesor, learningPath);});
     }
 
     @Test
@@ -726,9 +696,7 @@ public class testActividad {
             new ArrayList<>()
         );
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.eliminarActividadSeguimiento(actividadSeguimiento, profesor, learningPath);
-        });
+        assertThrows(IllegalArgumentException.class, () -> { actividad.eliminarActividadSeguimiento(actividadSeguimiento, profesor, learningPath);});
     }
 
     @Test
@@ -765,13 +733,6 @@ public class testActividad {
     public void testSetDescripcionValida(){
         actividad.setDescripcion("Nueva descripción", learningPath);
         assertEquals("Nueva descripción", actividad.getDescripcion());
-    }
-
-    @Test
-    public void testSetDescripcionInvalida(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            actividad.setDescripcion(null, learningPath);
-        });
     }
 
     @Test

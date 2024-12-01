@@ -63,7 +63,7 @@ public class Main {
         while (true) {
             System.out.print("Ingrese un comando: ");
             String comando = scanner.nextLine();
-            if ((comando.equals("8") && (consola instanceof ConsolaProfesor)) || (comando.equals("4") && consola instanceof ConsolaEstudiante) || (comando.equals("7") && consola instanceof ConsolaAdmin)) { // Comando genérico de "Salir"
+            if ((comando.equals("10") && (consola instanceof ConsolaProfesor)) || (comando.equals("4") && consola instanceof ConsolaEstudiante) || (comando.equals("7") && consola instanceof ConsolaAdmin)) { // Comando genérico de "Salir"
                 consola.ejecutarComando(comando);
                 break;
             }

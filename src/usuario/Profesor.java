@@ -107,7 +107,7 @@ public class Profesor extends Usuario {
 
 // Método para crear actividades en el Learning Path (Se adapto del que ya se hizo para la persistencia)
 
-public void crearActividad(LearningPath learningPath, String descripcion, Nivel nivelDificultad, String objetivo,
+public Actividad crearActividad(LearningPath learningPath, String descripcion, Nivel nivelDificultad, String objetivo,
                            int duracionEsperada, double version, LocalDateTime fechaLimite, Map<Estudiante, Status> estadosPorEstudiante,
                            Obligatoria obligatoria, String tipo, List<Actividad> actividadesPreviasSugeridas,
                            List<Actividad> actividadesSeguimientoRecomendadas, ArrayList<PreguntaAbierta> listaPreguntasAbiertas,
@@ -175,6 +175,7 @@ public void crearActividad(LearningPath learningPath, String descripcion, Nivel 
     // Agregar la nueva actividad al Learning Path
     learningPath.agregarActividad(nuevaActividad);
     System.out.println("Actividad " + tipo + " agregada al Learning Path: " + learningPath.getTitulo());
+    return nuevaActividad;
 }
 
 

@@ -17,8 +17,8 @@ public class Profesor extends Usuario {
 
     public Profesor(String nombre, String contrasena, String correo, List<LearningPath> learningPathCreado, List<Estudiante> estudiantes) {
         super(nombre, contrasena, "profesor",correo);
-        this.learningPathCreado = learningPathCreado;
-        this.estudiantes = estudiantes;
+        this.learningPathCreado = (learningPathCreado != null) ? learningPathCreado : new ArrayList<>();
+        this.estudiantes = (estudiantes != null) ? estudiantes : new ArrayList<>();
     }
 
     // Getters y Setters

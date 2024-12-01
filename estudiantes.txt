@@ -1,0 +1,2 @@
+ESTUDIANTE,Carlos,5678,carlos@example.com
+LEARNING_PATHS_COMPLETADOS:

@@ -1,0 +1,2 @@
+PROFESOR,Juan,1234,juan@example.com
+LEARNING_PATHS:

@@ -18,6 +18,7 @@ import actividad.Obligatoria;
 import actividad.Quiz;
 import actividad.Status;
 import actividad.Tarea;
+import plataforma.Plataforma;
 import pregunta.Opcion;
 import pregunta.Pregunta;
 import pregunta.PreguntaAbierta;
@@ -27,10 +28,12 @@ import usuario.Profesor;
 
 public class ConsolaProfesor implements Consola{
     private Profesor profesor;
+    private Plataforma plataforma;
     private Scanner scanner;
 
-    public ConsolaProfesor(Profesor profesor, Scanner scanner) {
+    public ConsolaProfesor(Profesor profesor, Plataforma plataforma, Scanner scanner) {
         this.profesor = profesor;   
+        this.plataforma = plataforma;
         this.scanner = scanner;
     }
 
@@ -127,6 +130,11 @@ public class ConsolaProfesor implements Consola{
             System.out.println("Entrada no válida. Debes ingresar un número.");
             return null; // Manejo de entrada no numérica
         }
+    }
+
+    private void guardarCambios() {
+        plataforma.guardarDatos();
+        System.out.println("Cambios guardados en la plataforma.");
     }
 
     private double solicitarCalificacionMinima(Scanner scanner) {
@@ -342,6 +350,7 @@ public class ConsolaProfesor implements Consola{
         switch(comando){
             case "1":
                 crearActividadInteractiva(profesor, scanner);
+                guardarCambios();
                 System.out.println("Actividad creada exitosamente.");
                 break;
             case "2":
@@ -365,6 +374,7 @@ public class ConsolaProfesor implements Consola{
                     listaActividades.add(actividad);
                 }
                 profesor.crearLearningPath(titulo, nivelLP, descripcionLP, objetivoLP, duracionLP, 0, listaActividades);
+                guardarCambios();
                 break;
             case "3":
                 System.out.println("Viendo estudiantes inscritos en Learning Path...");
@@ -409,6 +419,7 @@ public class ConsolaProfesor implements Consola{
                 } else {
                     System.out.println("Eliminación cancelada.");
                 }
+                guardarCambios();
                 break;
             case "6":
                 System.out.println("Verificando si Estudiante ha completado Learning Path...");
@@ -468,8 +479,9 @@ public class ConsolaProfesor implements Consola{
                 } else {
                     System.out.println("Tipo de actividad no reconocido.");
                 }
+                guardarCambios();
                 break;
-                case "8":
+            case "8":
                 System.out.println("Modificando actividad...");
                 try {
                     // Solicitar el Learning Path que contiene la actividad
@@ -517,9 +529,10 @@ public class ConsolaProfesor implements Consola{
                 } catch (Exception e) {
                     System.out.println("Error al modificar la actividad: " + e.getMessage());
                 }
+                guardarCambios();
                 break;
             
-                case "9":
+            case "9":
                 System.out.println("Modificando Learning Path...");
                 try {
                     // Solicitar el Learning Path a modificar
@@ -562,6 +575,7 @@ public class ConsolaProfesor implements Consola{
                 } catch (Exception e) {
                     System.out.println("Error al modificar el Learning Path: " + e.getMessage());
                 }
+                guardarCambios();
                 break;
             case "10":
                 System.out.println("Saliendo...");

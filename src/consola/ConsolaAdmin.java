@@ -8,14 +8,17 @@ import usuario.Usuario;
 
 import LPRS.LearningPath;
 import actividad.Actividad;
+import plataforma.Plataforma;
 
 public class ConsolaAdmin implements Consola {
     private Autenticacion autenticacion = new Autenticacion();
     private Administrador admin;
     private Scanner scanner;
+    private Plataforma plataforma;
 
-    public ConsolaAdmin(Scanner scanner) {
+    public ConsolaAdmin(Plataforma plataforma, Scanner scanner) {
         this.admin = Administrador.getAdmin();
+        this.plataforma = plataforma;
         this.scanner = scanner;
     }
 
@@ -42,6 +45,11 @@ public class ConsolaAdmin implements Consola {
         System.out.println("7. Salir");
     }
 
+    private void guardarCambios() {
+        plataforma.guardarDatos();
+        System.out.println("Cambios guardados en la plataforma.");
+    }
+
     @Override
     public void ejecutarComando(String comando){
 
@@ -58,29 +66,32 @@ public class ConsolaAdmin implements Consola {
 
                 if (tipoUsuario.equals("profesor")) {
                     admin.crearProfesor(nombre, contrasenia, correo, autenticacion);
+                    guardarCambios();
                     System.out.println("Profesor creado exitosamente.");
                 } else if (tipoUsuario.equals("estudiante")) {
                     admin.crearEstudiante(nombre, contrasenia, correo, autenticacion);
+                    guardarCambios();
                     System.out.println("Estudiante creado exitosamente.");
                 } else {
                     System.out.println("Tipo de usuario no reconocido.");
                 }
                 break;
             case "2":
-            System.out.print("Ingrese el correo del usuario a eliminar: ");
-            String correoEliminar = scanner.nextLine();
-            Usuario usuarioEliminar = autenticacion.buscarUsuarioPorCorreo(correoEliminar);
+                System.out.print("Ingrese el correo del usuario a eliminar: ");
+                String correoEliminar = scanner.nextLine();
+                Usuario usuarioEliminar = autenticacion.buscarUsuarioPorCorreo(correoEliminar);
             if (usuarioEliminar != null) {
                 admin.eliminarUsuario(usuarioEliminar, autenticacion);
+                guardarCambios();
                 System.out.println("Usuario eliminado exitosamente.");
             } else {
                 System.out.println("Usuario no encontrado.");
             }
                 break;
             case "3":
-            System.out.print("Ingrese el correo del usuario a modificar: ");
-            String correoModificar = scanner.nextLine();
-            Usuario usuarioModificar = autenticacion.buscarUsuarioPorCorreo(correoModificar);
+                System.out.print("Ingrese el correo del usuario a modificar: ");
+                String correoModificar = scanner.nextLine();
+                Usuario usuarioModificar = autenticacion.buscarUsuarioPorCorreo(correoModificar);
 
             if (usuarioModificar != null) {
                 System.out.print("Ingrese el nuevo nombre completo (deje en blanco para no cambiar): ");
@@ -99,7 +110,7 @@ public class ConsolaAdmin implements Consola {
                         System.out.println("Ya existe un usuario con este nuevo correo. No se cambiará.");
                     }
                 }
-
+                guardarCambios();
                 System.out.println("Usuario modificado exitosamente.");
             } else {
                 System.out.println("Usuario no encontrado.");
@@ -125,6 +136,7 @@ public class ConsolaAdmin implements Consola {
                 }
                 if (learningPath != null) {
                     admin.eliminarLearningPath(learningPath);
+                    guardarCambios();
                     System.out.println("Learning Path eliminado exitosamente.");
                 } else {
                     System.out.println("Learning Path no encontrado.");
@@ -152,6 +164,7 @@ public class ConsolaAdmin implements Consola {
 
                 if (actividad != null) {
                     admin.eliminarActividad(actividad);
+                    guardarCambios();
                     System.out.println("Actividad eliminada exitosamente.");
                 } else {
                     System.out.println("Actividad no encontrada.");

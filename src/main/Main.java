@@ -28,6 +28,7 @@ public class Main {
         // Definir archivos de persistencia para profesores, estudiantes y learning paths
     
         Autenticacion autenticacion = new Autenticacion();
+        Plataforma plataforma = Plataforma.getPlataforma();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== Bienvenido al sistema ===");
@@ -50,18 +51,18 @@ public class Main {
         switch (usuario.getTipo()) {
         case "profesor":
             Profesor profesor = (Profesor) usuario;
-            ConsolaProfesor consolaProfesor = new ConsolaProfesor(profesor, scanner);
+            ConsolaProfesor consolaProfesor = new ConsolaProfesor(profesor, plataforma, scanner);
             consola = consolaProfesor;
             break;
 
         case "estudiante":
             Estudiante estudiante = (Estudiante) usuario;
-            ConsolaEstudiante consolaEstudiante = new ConsolaEstudiante(estudiante, new Plataforma(), scanner);
+            ConsolaEstudiante consolaEstudiante = new ConsolaEstudiante(estudiante, plataforma, scanner);
             consola = consolaEstudiante;
             break;
 
         case "admin":
-            ConsolaAdmin consolaAdmin = new ConsolaAdmin(scanner);
+            ConsolaAdmin consolaAdmin = new ConsolaAdmin(plataforma, scanner);
             consola = consolaAdmin;
             break;
 
@@ -77,7 +78,7 @@ public class Main {
         while (true) {
             System.out.print("Ingrese un comando: ");
             String comando = scanner.nextLine();
-            if ((comando.equals("10") && (consola instanceof ConsolaProfesor)) || (comando.equals("4") && consola instanceof ConsolaEstudiante) || (comando.equals("7") && consola instanceof ConsolaAdmin)) { // Comando genérico de "Salir"
+            if ((comando.equals("10") && (consola instanceof ConsolaProfesor)) || (comando.equals("8") && consola instanceof ConsolaEstudiante) || (comando.equals("7") && consola instanceof ConsolaAdmin)) { // Comando genérico de "Salir"
                 consola.ejecutarComando(comando);
                 break;
             }

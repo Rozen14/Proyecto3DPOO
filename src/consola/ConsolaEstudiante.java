@@ -82,6 +82,11 @@ public class ConsolaEstudiante implements Consola {
         }
     }
 
+    private void guardarCambios() {
+        plataforma.guardarDatos();
+        System.out.println("Cambios guardados en la plataforma.");
+    }
+
     @Override
     public void ejecutarComando(String comando) {
         switch (comando) {
@@ -150,6 +155,7 @@ public class ConsolaEstudiante implements Consola {
                     Actividad actividadActual = seleccionarActividad(estudiante, scanner);
                     if (actividadActual != null) {
                         estudiante.setActividadActual(actividadActual);
+                        guardarCambios();
                         System.out.println("Has comenzado la actividad: " + actividadActual.getDescripcion());
                     }
                 } catch (IllegalStateException e) {
@@ -165,6 +171,7 @@ public class ConsolaEstudiante implements Consola {
                         System.out.print("Ingresa tu respuesta: ");
                         String respuesta = scanner.nextLine();
                         estudiante.responderActividad(actividadSeleccionada, respuesta);
+                        guardarCambios();
                         System.out.println("¡Actividad respondida exitosamente!");
                     }
                 } catch (Exception e) {

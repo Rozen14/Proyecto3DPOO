@@ -53,19 +53,19 @@ public class Profesor extends Usuario {
     // Método para evaluar la tarea
     public void evaluarTarea(Tarea tarea, Estudiante estudiante, LearningPath learningPath, double calificacionObtenida, boolean exitosa) {
         tarea.evaluar(this, estudiante, learningPath, calificacionObtenida, exitosa);
-        System.out.println("La tarea fue evaluada por el profesor: " + this.getNombre());
+       System.out.println("La tarea fue evaluada por el profesor: " + this.getNombre());
     }
 
     // Método para evaluar el examen
     public void evaluarExamen(Examen examen, Estudiante estudiante, LearningPath learningPath, double calificacionObtenida, boolean exitosa) {
         // Metodo para evaluar preguntas abiertas del examen antes de evaluar el resto
-        
+       
         examen.evaluar(this, estudiante, learningPath, calificacionObtenida, exitosa);
-        System.out.println("El examen fue evaluado por el profesor: " + this.getNombre());
+       System.out.println("El examen fue evaluado por el profesor: " + this.getNombre());
     }
 
     public void evaluarPreguntasAbiertas(PreguntaAbierta PreguntaAbierta){
-
+    
         PreguntaAbierta.evaluarPorProfesor(true, "Respuesta correcta");
         System.out.println("Pregunta abierta evaluada por el profesor: " + this.getNombre());
 
@@ -76,25 +76,22 @@ public class Profesor extends Usuario {
         if (quiz.esExitosa(estudiante)) {
             System.out.println("El quiz ha sido completado exitosamente.");
         } else {
-            System.out.println("El quiz no ha sido aprobado.");
-        }
+           System.out.println("El quiz no ha sido aprobado.");
+       }
     }
 
-    // Método para revisar la encuesta (aunque no se evalúa directamente)
+    //Método para revisar la encuesta (aunque no se evalúa directamente)
     public void revisarEncuesta(Encuesta encuesta, Estudiante estudiante) {
-        if (encuesta.esExitosa(estudiante)) {
-            System.out.println("La encuesta ha sido completada por el estudiante: " + estudiante.getNombre());
-        } else {
-            System.out.println("La encuesta no ha sido completada.");
+       if (encuesta.esExitosa(estudiante)) {
+           System.out.println("La encuesta ha sido completada por el estudiante: " + estudiante.getNombre());
+      } else {
+           System.out.println("La encuesta no ha sido completada.");
         }
     }
 
     // Método para crear un Learning Path
     public void crearLearningPath(String titulo, Nivel nivelDificultad, String descripcion, String objetivos, 
                                   int duracionMinutos, float rating, List<Actividad> listaActividades) throws IllegalStateException {
-        if (titulo == null || nivelDificultad == null || descripcion == null || objetivos == null || duracionMinutos <= 0 || rating < 0 || rating > 5) {
-            throw new IllegalStateException("Los datos ingresados no son válidos.");
-        }
 
         boolean tieneActividadObligatoria = listaActividades.stream().anyMatch(Actividad::esObligatoria);
         if (!tieneActividadObligatoria) {
@@ -209,9 +206,11 @@ public void agregarEstudiante(Estudiante estudiante) {
     estudiantes.add(estudiante);
 }
 
-public void crearPreguntaCerrada(String enunciado) {
+public PreguntaCerrada crearPreguntaCerrada(String enunciado) {
         PreguntaCerrada pregunta = new PreguntaCerrada(enunciado);
+        
         System.out.println("Pregunta cerrada creada: " + pregunta.getEnunciado());
+        return pregunta;
     }
 
     public void agregarOpcionA(Dictionary<Opcion, String> opcionA, PreguntaCerrada pregunta) {
@@ -231,6 +230,11 @@ public void crearPreguntaCerrada(String enunciado) {
     public void agregarOpcionD(Dictionary<Opcion, String> opcionD, PreguntaCerrada pregunta) {
         pregunta.setOpcionD(opcionD);
         System.out.println("Opción agregada a la pregunta cerrada: " + pregunta.getEnunciado());
+    }
+
+    public void agregarRespuesta(Dictionary<Opcion, String> respuesta, PreguntaCerrada pregunta) {
+        pregunta.setRespuesta(respuesta);
+        System.out.println("Respuesta agregada a la pregunta cerrada: " + pregunta.getEnunciado());
     }
 
     public List<String> obtenerEstudiantesEnLearningPath(LearningPath learningPath) {

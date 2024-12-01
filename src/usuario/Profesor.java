@@ -2,6 +2,7 @@ package usuario;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import LPRS.LearningPath;
 import actividad.*;
@@ -232,5 +233,44 @@ public void crearPreguntaCerrada(String enunciado) {
         System.out.println("Opción agregada a la pregunta cerrada: " + pregunta.getEnunciado());
     }
 
+    public List<String> obtenerEstudiantesEnLearningPath(LearningPath learningPath) {
+    if (!learningPathCreado.contains(learningPath)) {
+        throw new IllegalStateException("El Learning Path no pertenece a este profesor.");
+    }
+    return learningPath.getEstudiantesInscritos().stream()
+            .map(Estudiante::getNombre)
+            .collect(Collectors.toList());
+    }
+
+    public Map<String, Float> obtenerProgresoEstudiantes(LearningPath learningPath) {
+        if (!learningPathCreado.contains(learningPath)) {
+            throw new IllegalStateException("El Learning Path no pertenece a este profesor.");
+        }
+        Map<String, Float> progresoEstudiantes = new HashMap<>();
+        for (Estudiante estudiante : learningPath.getEstudiantesInscritos()) {
+            progresoEstudiantes.put(estudiante.getNombre(), learningPath.getProgresoParaEstudiante(estudiante));
+        }
+        return progresoEstudiantes;
+    }
+
+    public void eliminarLearningPath(LearningPath learningPath) {
+        if (!learningPathCreado.contains(learningPath)) {
+            throw new IllegalStateException("El Learning Path no pertenece a este profesor.");
+        }
+        if (learningPath.verificarSiHayInscritos()) {
+            throw new IllegalStateException("No se puede eliminar un Learning Path con estudiantes inscritos.");
+        }
+        learningPathCreado.remove(learningPath);
+        System.out.println("Learning Path eliminado: " + learningPath.getTitulo());
+    }
+
+    public boolean verificarEstudianteCompletoLearningPath(LearningPath learningPath, Estudiante estudiante) {
+        if (!learningPathCreado.contains(learningPath)) {
+            throw new IllegalStateException("El Learning Path no pertenece a este profesor.");
+        }
+        return learningPath.getListaActividades().stream()
+                .allMatch(actividad -> actividad.esExitosa(estudiante));
+    }
+    
 
 }

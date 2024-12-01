@@ -30,6 +30,10 @@ public class Encuesta extends Actividad {
     // Método para responder la encuesta por un estudiante
     @Override
     public void responder(Estudiante estudiante, String respuesta) {
+
+   
+        
+
         if (estudiante == null) {
             throw new SecurityException("Un estudiante debe responder la encuesta.");
         }
@@ -118,5 +122,20 @@ public class Encuesta extends Actividad {
         }
 
         listaPreguntas.remove(pregunta); // Eliminar la pregunta
+    }
+
+    // Inscripcion
+
+    public void inscripcionEstudiante(Estudiante estudiante) {
+        if (estudiante == null) {
+            throw new IllegalArgumentException("El estudiante no puede ser nulo.");
+        }
+
+        if (estadosPorEstudiante.containsKey(estudiante)) {
+            throw new IllegalArgumentException("El estudiante ya está inscrito en la encuesta.");
+        }
+
+        estadosPorEstudiante.put(estudiante, Status.Incompleto);
+        estudiante.setActividadActual(this);
     }
 }

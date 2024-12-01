@@ -50,7 +50,7 @@ public class LearningPath {
         this.objetivos= objetivos;
         this.duracionMinutos=duracionMinutos;
         this.fechaCreacion=LocalDateTime.now();
-        this.fechaModificacion=null;
+        this.fechaModificacion=LocalDateTime.now();
         this.version=1;
         this.status= new HashMap<>();
         this.listaActividades = listaActividades;
@@ -286,8 +286,11 @@ public class LearningPath {
         listaActividadesCompletadasConDup.computeIfAbsent(estudiante, k -> new ArrayList<>()); // Si no existe la lista, se crea una nueva, el metodo computeIfAbsent se utiliza para obtener el valor de una clave especifica para tal setudiante, si no existe, se crea una nueva instancia de la lista
         listaActividadesCompletadas.computeIfAbsent(estudiante, k -> new ArrayList<>()); 
 
-        // Agregar la actividad a la lista con duplicados
-        listaActividadesCompletadasConDup.get(estudiante).add(actividad); 
+        // Agregar la actividad a la lista con duplicados si el estado es completado
+        if (actividad.esExitosa(estudiante)) {
+        listaActividadesCompletadasConDup.get(estudiante).add(actividad);
+        estudiante.setActividadActual(null); // Establecer la actividad actual del estudiante como nula porque ya completó la actividad
+        }
 
         // Agregar la actividad a la lista sin duplicados solo si aún no está presente
         if (!listaActividadesCompletadas.get(estudiante).contains(actividad)) {
@@ -317,6 +320,8 @@ public class LearningPath {
     
         if (p == 100) {
             setStatusParaEstudiante(estudiante, Status.Completado);
+            // Agregar el Learning Path a la lista de Learning Paths completados del estudiante
+            estudiante.agregarLearningPathCompletado(this);
         }
     
         return p;
@@ -371,8 +376,8 @@ public class LearningPath {
             String correo = estudiante.getCorreo();
             String nombre = estudiante.getNombre();
             String contrasena = estudiante.getContrasenia(); // Agregar contraseña
-            Status estado = status.getOrDefault(estudiante, Status.Incompleto);
-            float progresoEstudiante = progreso.getOrDefault(estudiante, 0.0f);
+            Status estado = getStatusParaEstudiante(estudiante);
+            float progresoEstudiante = getProgresoParaEstudiante(estudiante);
 
             // Formato: correo:nombre:contraseña:estado,progreso
             writer.write(correo + ":" + nombre + ":" + contrasena + ":" + estado + "," + progresoEstudiante);
@@ -446,6 +451,7 @@ public class LearningPath {
                             String contrasena = partes[2]; // Leer contraseña
                             String[] estadoYProgreso = partes[3].split(",");
                             Status estado = Status.valueOf(estadoYProgreso[0]);
+
                             float progresoEstudiante = Float.parseFloat(estadoYProgreso[1]);
                     
                             // Crear el estudiante con todos los datos
@@ -453,6 +459,7 @@ public class LearningPath {
                             learningPath.estudiantesInscritos.add(estudiante);
                             learningPath.status.put(estudiante, estado);
                             learningPath.progreso.put(estudiante, progresoEstudiante);
+
                         }
                     } 
                     

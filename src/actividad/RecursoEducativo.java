@@ -78,5 +78,19 @@ public class RecursoEducativo extends Actividad {
         // No se necesita implementación para Recurso Educativo
     }
 
+    // insripcion
+
+    public void inscripcionEstudiante(Estudiante estudiante) {
+        if (estudiante == null) {
+            throw new SecurityException("Se requiere un estudiante para inscribirlo en el recurso educativo.");
+        }
+        if (estadosPorEstudiante.containsKey(estudiante)) {
+            throw new UnsupportedOperationException("El estudiante ya está inscrito en el recurso educativo.");
+        }
+        estadosPorEstudiante.put(estudiante, Status.Incompleto);
+        estudiante.setActividadActual(this);
+        System.out.println("El estudiante " + estudiante.getNombre() + " ha sido inscrito en el recurso educativo.");
+    }
+
 
 }

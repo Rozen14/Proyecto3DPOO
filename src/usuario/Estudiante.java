@@ -3,6 +3,7 @@ import plataforma.*;
 import actividad.*;
 import LPRS.LearningPath;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Estudiante extends Usuario{
 
@@ -20,11 +21,49 @@ public class Estudiante extends Usuario{
         this.learningPathActual=null;
         this.listaActividadesCompletadas = new ArrayList<>();
         this.listaLearningPathsCompletados = new ArrayList<>();
-        this.listaActividadesPorCompletar = null;
+        this.listaActividadesPorCompletar = new ArrayList<>();
+        this.listaActividadesPreviasSugeridas = new ArrayList<>();
+        
+    }
+
+    public void actualizarActividadesPorCompletar(){
+
+        if (learningPathActual!=null){
+            listaActividadesPorCompletar = new ArrayList<>();
+            listaActividadesPorCompletar.addAll(learningPathActual.getListaActividades());
+        }
+        else {
+            throw new IllegalStateException("No hay un Learning Path que se está siguiendo actualmente; escoja uno y vuelva a intentar.");
+        }
+        for (int i=0; i<listaActividadesCompletadas.size(); i++){
+            listaActividadesPorCompletar.remove(listaActividadesCompletadas.get(i));
+        }
+
+
+
+    }
+
+    public void actualizarActividadesPreviasSugeridas(){
+
+        if (actividadActual!=null){
+            listaActividadesPreviasSugeridas = new ArrayList<>();
+            listaActividadesPreviasSugeridas.addAll(actividadActual.getActividadesPreviasSugeridas());
+        }
+        else {
+            throw new IllegalStateException("No hay una actividad que se está siguiendo actualmente; escoja una y vuelva a intentar.");
+        }
+        for (int i=0; i<listaActividadesCompletadas.size(); i++){
+            listaActividadesPreviasSugeridas.remove(listaActividadesCompletadas.get(i));
+        }
+
     }
 
     public Actividad getActividadActual() {
         return actividadActual;
+    }
+
+    public List<Actividad> getListaActividadesPorCompletar() {
+        return listaActividadesPorCompletar;
     }
 
     public List<Actividad> getActividadesPreviasSugeridas(){
@@ -57,15 +96,14 @@ public class Estudiante extends Usuario{
         this.learningPathActual = learningPathActual;
     }
 
-    public static boolean registrarEstudiante(String nombre, String correo, String contrasenia) {
+    public static void registrarEstudiante(String nombre, String correo, String contrasenia) {
 		
         Estudiante estudiante = new Estudiante(nombre, correo, contrasenia);
-		Plataforma plataforma = Plataforma.getPlataforma();
-		return plataforma.agregarEstudiante(estudiante);
+		
 	}
 
 
-    public void marcarTareaCompletada(Tarea tarea, String submissionMethod){
+    public void marcarTareaCompletada(Tarea tarea, String submissionMethod){ // Este metodo en si esta mal solo se deberia marcar la tarea como completada si se ha enviado la tarea, esto lo uso es para los tests y ya
 
         tarea.setStatusParaEstudiante(this, Status.Enviada);
         listaActividadesCompletadas.add(this.actividadActual);
@@ -159,7 +197,36 @@ public class Estudiante extends Usuario{
 
     // Agregar actividades completadas
 
-    public void agregarActividadCompletada(Actividad actividad){
-        listaActividadesCompletadas.add(actividad);
+        public void agregarActividadCompletada(Actividad actividad){
+            listaActividadesCompletadas.add(actividad);
+        }
+
+        public List<String> listarActividadesPendientes() {
+        if (listaActividadesPorCompletar == null || listaActividadesPorCompletar.isEmpty()) {
+            throw new IllegalStateException("No hay actividades pendientes.");
+        }
+        return listaActividadesPorCompletar.stream()
+                .map(Actividad::getDescripcion)
+                .collect(Collectors.toList());
     }
+
+    public float obtenerProgresoLearningPathActual() {
+        if (learningPathActual == null) {
+            throw new IllegalStateException("No hay un Learning Path en curso.");
+        }
+        int totalActividades = learningPathActual.getListaActividades().size();
+        int completadas = listaActividadesCompletadas.size();
+        return (float) completadas / totalActividades * 100;
+    }
+
+    public boolean tieneLearningPathAsignado() {
+        return learningPathActual != null;
+    }
+
+    public List<String> listarLearningPathsCompletados() {
+        return listaLearningPathsCompletados.stream()
+                .map(LearningPath::getTitulo)
+                .collect(Collectors.toList());
+    }
+    
 }

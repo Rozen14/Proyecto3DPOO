@@ -47,6 +47,18 @@ public abstract class Usuario {
         this.correo = correo;
     } 
 
+    public boolean validarCredenciales(String correo, String contrasenia) {
+        return this.correo.equals(correo) && this.contrasenia.equals(contrasenia);
+    }
+    
+    public boolean actualizarContrasenia(String contraseniaActual, String nuevaContrasenia) {
+        if (this.contrasenia.equals(contraseniaActual)) {
+            this.contrasenia = nuevaContrasenia;
+            return true;
+        }
+        return false;
+    }
+        
     
 
 }

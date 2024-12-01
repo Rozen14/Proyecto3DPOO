@@ -99,4 +99,10 @@ public class testRecursoEducativo {
     public void testReintentarNoImplementado() {
         recursoEducativo.reintentar(estudiante); // No hace nada
     }
+
+    @Test
+    public void testInscripcionEstudianteValido() {
+        recursoEducativo.inscripcionEstudiante(estudiante);
+        assertTrue(estadosPorEstudiante.containsKey(estudiante));
+    }
 }

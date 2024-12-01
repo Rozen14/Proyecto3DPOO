@@ -1,0 +1,9 @@
+Path Matemáticas,Intermedio,Descripción del path,Aprender álgebra,120,2024-11-30T09:03:19.286937000,2024-11-30T09:03:19.286938000,1,4.5,Juan
+ESTUDIANTES:
+maria@example.com:Maria:password:Incompleto,0.0
+ACTIVIDADES:
+Tarea,Tarea 1,Principiante,Resolver problemas básicos,60,1.0,2024-12-07T09:03:19.286921000,2024-11-30T09:03:19.286928000,maria@example.com:Incompleto,SI,,,LMS,Juan
+Quiz,Quiz 1,Intermedio,Evaluar conceptos,30,1.0,2024-12-07T09:03:19.286932000,2024-11-30T09:03:19.286934000,maria@example.com:Incompleto,NO,,,,50.0,maria@example.com:0.0,Juan
+
+COMPLETADAS_CON_DUP:
+COMPLETADAS_SIN_DUP:

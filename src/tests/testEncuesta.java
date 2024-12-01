@@ -184,6 +184,11 @@ public class testEncuesta {
         assertThrows(IllegalArgumentException.class, () -> encuesta.eliminarPregunta(new PreguntaAbierta("¿Cuál es tu lenguaje de programación favorito?")));
     }
 
+    @Test
+    public void testInscripcionEstudiante() {
+        encuesta.inscripcionEstudiante(estudiante);
+        assertTrue(encuesta.getEstadosPorEstudiante().containsKey(estudiante));
+    }
 
 
 }

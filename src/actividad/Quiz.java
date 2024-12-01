@@ -249,6 +249,10 @@ public class Quiz extends Actividad {
         if (estudiante == null) { // Verificar si el estudiante es nulo
             throw new IllegalArgumentException("El estudiante no puede ser nulo.");
         }
+
+        if (estudiante.getActividadActual() != null) { // Verificar si el estudiante ya está inscrito en el quiz
+            throw new UnsupportedOperationException("El estudiante ya está inscrito en otra actividad o esta");
+        }
     
         if (estadosPorEstudiante.containsKey(estudiante)) { // Verificar si el estudiante ya está inscrito
             throw new UnsupportedOperationException("El estudiante ya está inscrito en el quiz.");
@@ -267,6 +271,7 @@ public class Quiz extends Actividad {
     
         estadosPorEstudiante.put(estudiante, Status.Incompleto); // Agregar el estudiante al quiz con estado Incompleto
         calificacionesObtenidas.put(estudiante, 0.0); // Agregar el estudiante al quiz con calificación 0
+        estudiante.setActividadActual(this);
         System.out.println("El estudiante " + estudiante.getNombre() + " se ha inscrito en la actividad."); // Mensaje de confirmación
     }
 

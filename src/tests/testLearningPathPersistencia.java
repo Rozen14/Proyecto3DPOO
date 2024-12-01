@@ -36,6 +36,15 @@ public class testLearningPathPersistencia {
             for (Estudiante estudiante : lp.getEstudiantesInscritos()) {
                 System.out.println(estudiante.getNombre());
             }
+            // Estados de learning path para cada estudiante
+            System.out.println("Estados de LearningPath para cada estudiante:");
+            for (Estudiante estudiante : lp.getEstudiantesInscritos()) {
+                System.out.println("Estudiante: " + estudiante.getNombre());
+                System.out.println("Estado: " + lp.getStatusParaEstudiante(estudiante));
+                System.out.println("Verificar si inscrito: " + lp.verificarSiInscrito(estudiante));
+            }
+
+
         } else {
             System.out.println("Error al cargar el LearningPath.");
         }

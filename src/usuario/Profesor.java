@@ -94,9 +94,9 @@ public class Profesor extends Usuario {
                                   int duracionMinutos, float rating, List<Actividad> listaActividades) throws IllegalStateException {
 
         boolean tieneActividadObligatoria = listaActividades.stream().anyMatch(Actividad::esObligatoria);
-        if (!tieneActividadObligatoria) {
-            throw new IllegalStateException("El Learning Path debe contener al menos una actividad obligatoria.");
-        }
+        //if (!tieneActividadObligatoria) {
+            //throw new IllegalStateException("El Learning Path debe contener al menos una actividad obligatoria.");
+        //}
 
         LearningPath learningPath = new LearningPath(titulo, nivelDificultad, descripcion, objetivos, duracionMinutos, this, rating, listaActividades);
         System.out.println("Learning Path creado exitosamente: " + learningPath.getTitulo());

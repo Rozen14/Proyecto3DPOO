@@ -6,6 +6,8 @@ import usuario.Estudiante;
 import usuario.Profesor;
 import usuario.Administrador;
 import usuario.Usuario;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Autenticacion {
@@ -14,7 +16,7 @@ public class Autenticacion {
     public Autenticacion(){
         this.usuarios = new HashMap<>();
         usuarios.put("admin1", Administrador.getAdmin());
-        usuarios.put("teacher1", new Profesor("teacher1", "abcd", "teacher1@prof.com", null,  null));
+        usuarios.put("teacher1", new Profesor("teacher1", "abcd", "teacher1@prof.com", new ArrayList<>(),  new ArrayList<>()));
         usuarios.put("student1", new Estudiante("student1", "5678", "student1@student.com"));
     }
     

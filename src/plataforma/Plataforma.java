@@ -5,6 +5,7 @@ import usuario.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -181,15 +182,16 @@ public class Plataforma {
     
 
     private void guardarLearningPaths() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("learningPaths.txt"))) {
-            for (Map.Entry<String, LearningPath> entry : learningPaths.entrySet()) {
-                LearningPath lp = entry.getValue();
-                writer.write(lp.toString()); // Suponiendo que el método toString devuelve una representación adecuada
-                writer.write("\n");
-            }
-        } catch (IOException e) {
-            System.out.println("Error al guardar Learning Paths: " + e.getMessage());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RUTA_LEARNING_PATHS, false))) {
+        for (LearningPath learningPath : learningPaths.values()) {
+            // Asegúrate de que cada LearningPath tenga un método toString o equivalente para serialización.
+            writer.write(learningPath.toString());
+            writer.newLine();
         }
+        System.out.println("Learning Paths guardados exitosamente.");
+    } catch (IOException e) {
+        System.out.println("Error al guardar Learning Paths: " + e.getMessage());
+    }
     }
     
 

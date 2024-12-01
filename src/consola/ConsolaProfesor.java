@@ -365,15 +365,7 @@ public class ConsolaProfesor implements Consola{
                 Nivel nivelLP = Nivel.valueOf(scanner.nextLine());
                 System.out.print("Ingrese el objetivo del Learning Path: ");
                 String objetivoLP = scanner.nextLine();
-                System.out.print("Ingrese la cantidad de actividades que desea agregar al Learning Path: ");
-                int cantidadActividades = Integer.parseInt(scanner.nextLine());
-                List<Actividad> listaActividades = new ArrayList<>();
-                for (int i = 0; i < cantidadActividades; i++) {
-                    System.out.println("\nCreando actividad " + (i + 1) + ":");
-                    Actividad actividad = crearActividadInteractiva(profesor, scanner); // Llama a la función creada anteriormente
-                    listaActividades.add(actividad);
-                }
-                profesor.crearLearningPath(titulo, nivelLP, descripcionLP, objetivoLP, duracionLP, 0, listaActividades);
+                profesor.crearLearningPath(titulo, nivelLP, descripcionLP, objetivoLP, duracionLP, 0, new ArrayList<>());
                 guardarCambios();
                 break;
             case "3":

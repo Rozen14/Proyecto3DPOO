@@ -30,7 +30,7 @@ public class ConsolaProfesor implements Consola{
     private Scanner scanner;
 
     public ConsolaProfesor(Profesor profesor, Scanner scanner) {
-        this.profesor = profesor;
+        this.profesor = profesor;   
         this.scanner = scanner;
     }
 
@@ -205,8 +205,8 @@ public class ConsolaProfesor implements Consola{
             String tipo = scanner.nextLine().toUpperCase();
             System.out.print("Ingrese la descripción de la actividad: ");
             String descripcion = scanner.nextLine();
-            System.out.print("Ingrese la dificultad de la actividad (PRINCIPIANTE, INTERMEDIO, AVANZADO): ");
-            Nivel nivel = Nivel.valueOf(scanner.nextLine().toUpperCase());
+            System.out.print("Ingrese la dificultad de la actividad (Principiante, Intermedio, Avanzado): ");
+            Nivel nivel = Nivel.valueOf(scanner.nextLine());
             System.out.print("Ingrese el objetivo de la actividad: ");
             String objetivo = scanner.nextLine();
             System.out.print("Ingrese la duración esperada de la actividad en minutos: ");

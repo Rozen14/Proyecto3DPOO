@@ -229,4 +229,41 @@ public class Estudiante extends Usuario{
                 .collect(Collectors.toList());
     }
     
+    public void responderActividad(Actividad actividad, String respuesta) {
+        if (actividad == null) {
+            throw new IllegalArgumentException("La actividad no puede ser nula.");
+        }
+    
+        if (actividadActual == null || !actividadActual.equals(actividad)) {
+            throw new IllegalStateException("No puedes responder una actividad que no está en progreso.");
+        }
+    
+        if (actividad instanceof Tarea) {
+            // Responder a una tarea
+            ((Tarea) actividad).responder(this, respuesta);
+        } else if (actividad instanceof Quiz) {
+            // Responder a un quiz
+            ((Quiz) actividad).responder(this, respuesta);
+        } else if (actividad instanceof Examen) {
+            // Responder a un examen
+            ((Examen) actividad).responder(this, respuesta);
+        } else if (actividad instanceof Encuesta) {
+            // Responder a una encuesta
+            ((Encuesta) actividad).responder(this, respuesta);
+        } else if (actividad instanceof RecursoEducativo) {
+            System.out.println("Los recursos educativos no requieren una respuesta directa.");
+        } else {
+            throw new IllegalArgumentException("Tipo de actividad no reconocido.");
+        }
+    
+        // Actualizar el estado de la actividad
+        actividad.setStatusParaEstudiante(this, Status.Enviada);
+        listaActividadesCompletadas.add(actividad);
+        listaActividadesPorCompletar.remove(actividad);
+        actividadActual = null;
+    
+        System.out.println("Has completado la actividad: " + actividad.getDescripcion());
+    }
+    
+
 }

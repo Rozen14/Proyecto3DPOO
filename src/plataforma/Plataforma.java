@@ -16,7 +16,7 @@ public class Plataforma {
     private Map<String, Profesor> profesores;
     private Map<String, LearningPath> learningPaths;
 
-    private Plataforma(){
+    public Plataforma(){
 
         if (plataforma == null){
             plataforma = this;

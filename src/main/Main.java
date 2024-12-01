@@ -10,6 +10,8 @@ import LPRS.LearningPath;
 import pregunta.*;
 import usuario.*;
 import persistencia.*;
+import plataforma.Plataforma;
+
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,16 +47,28 @@ public class Main {
 
         // Identificar el tipo de usuario y delegar a la consola correspondiente
         Consola consola;
-        if (usuario instanceof Profesor) {
-            consola = new ConsolaProfesor();
-        } else if (usuario instanceof Estudiante) {
-            consola = new ConsolaEstudiante();
-        } else if (usuario instanceof Administrador) {
-            consola = new ConsolaAdmin();
-        } else {
-            System.out.println("Tipo de usuario no reconocido. Saliendo...");
-            scanner.close();
-            return;
+        switch (usuario.getTipo()) {
+        case "profesor":
+            Profesor profesor = (Profesor) usuario;
+            ConsolaProfesor consolaProfesor = new ConsolaProfesor(profesor, scanner);
+            consola = consolaProfesor;
+            break;
+
+        case "estudiante":
+            Estudiante estudiante = (Estudiante) usuario;
+            ConsolaEstudiante consolaEstudiante = new ConsolaEstudiante(estudiante, new Plataforma(), scanner);
+            consola = consolaEstudiante;
+            break;
+
+        case "admin":
+            ConsolaAdmin consolaAdmin = new ConsolaAdmin(scanner);
+            consola = consolaAdmin;
+            break;
+
+        default:
+            System.out.println("Tipo de usuario no reconocido.");
+            consola = null;
+            break;
         }
 
         consola.iniciar();

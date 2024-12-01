@@ -1,12 +1,12 @@
-Learning Path de Prueba,Intermedio,Un camino de aprendizaje completo,Mejorar habilidades de programación,120,2024-12-01T00:46:40.560272400,2024-12-01T00:46:40.568268000,4,4.5,Juan
+Learning Path de Prueba,Intermedio,Un camino de aprendizaje completo,Mejorar habilidades de programación,120,2024-12-01T12:38:13.827628800,2024-12-01T12:38:13.838598900,4,4.5,Juan
 ESTUDIANTES:
 maria@example.com:Maria:1234:Completado,100.0
 carlos@example.com:Carlos:5678:Incompleto,0.0
 ACTIVIDADES:
-Tarea,Tarea de Ejemplo,Intermedio,Resolver problemas de lógica,60,1.0,2024-12-08T00:46:40.560272400,2024-12-01T00:46:40.560272400,carlos@example.com:noExitosa;maria@example.com:Completado,SI,,,Correo,Juan
-Quiz,Quiz de Matemáticas Básicas,Principiante,Verificar habilidades básicas de matemáticas,30,1.0,2024-12-06T00:46:40.568268000,2024-12-01T00:46:40.568268000,carlos@example.com:noExitosa;maria@example.com:Completado,NO,,,¿Cuál es el resultado de 2+2?,60.0,carlos@example.com:0.0;maria@example.com:100.0,Juan
+Tarea,Tarea de Ejemplo,Intermedio,Resolver problemas de lógica,60,1.0,2024-12-08T12:38:13.831616900,2024-12-01T12:38:13.833611900,carlos@example.com:noExitosa;maria@example.com:Completado,SI,,,Correo,Juan
+Quiz,Quiz de Matemáticas Básicas,Principiante,Verificar habilidades básicas de matemáticas,30,1.0,2024-12-06T12:38:13.837600500,2024-12-01T12:38:13.838598900,carlos@example.com:noExitosa;maria@example.com:Completado,NO,,,¿Cuál es el resultado de 2+2?,60.0,carlos@example.com:0.0;maria@example.com:100.0,Juan
 
-Recurso,Video de Introducción a Java,Intermedio,Introducción a la programación en Java,20,1.0,2024-12-11T00:46:40.568268000,2024-12-01T00:46:40.568268000,carlos@example.com:Completado;maria@example.com:Completado,NO,,,video,Juan
+Recurso,Video de Introducción a Java,Intermedio,Introducción a la programación en Java,20,1.0,2024-12-11T12:38:13.838598900,2024-12-01T12:38:13.838598900,carlos@example.com:Completado;maria@example.com:Completado,NO,,,video,Juan
 COMPLETADAS_CON_DUP:
 carlos@example.com:Video de Introducción a Java
 maria@example.com:Quiz de Matemáticas Básicas,Video de Introducción a Java

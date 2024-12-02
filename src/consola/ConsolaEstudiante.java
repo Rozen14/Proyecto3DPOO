@@ -201,6 +201,8 @@ public class ConsolaEstudiante implements Consola {
 
             case "8":
                 System.out.println("Saliendo...");
+                // Guardar datos nuevamente antes de salir
+                guardarCambios();
                 break;
 
             default:

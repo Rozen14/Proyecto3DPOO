@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -223,23 +224,33 @@ public class PersistenciaActividad {
         double version = Double.parseDouble(datos[5]);
         LocalDateTime fechaLimite = LocalDateTime.parse(datos[6], formatter);
         LocalDateTime fechaInicio = LocalDateTime.parse(datos[7], formatter);
-        Map<Estudiante, Status> estadosPorEstudiante = Arrays.stream(datos[8].split(";"))
-        .map(par -> par.split(":"))
-        .collect(Collectors.toMap(
-                par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
-                par -> Status.valueOf(par[1])
-        ));
+        Map<Estudiante, Status> estadosPorEstudiante = new HashMap<>(); // Inicializa un mapa vacío
+
+        if (!datos[8].isEmpty()) { // Verifica si datos[8] no está vacío
+            estadosPorEstudiante = Arrays.stream(datos[8].split(";"))
+                .map(par -> par.split(":"))
+                .collect(Collectors.toMap(
+                    par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
+                    par -> Status.valueOf(par[1])          // Convierte el estado a Status
+                ));
+}
+
         Obligatoria obligatoria = datos[9].equals("SI") ? Obligatoria.SI : Obligatoria.NO;
         List<Actividad> actividadesPreviasSugeridas = cargarActividades(datos[10], creador, formatter);
         List<Actividad> actividadesSeguimientoRecomendadas = cargarActividades(datos[11], creador, formatter);
         List<PreguntaCerrada> listaPreguntas = PersistenciaPregunta.cargarPreguntasCerradas(datos[12]);
         double calificacionMinima = Double.parseDouble(datos[13]);
-        Map<Estudiante, Double> calificacionesObtenidas = Arrays.stream(datos[14].split(";"))
-        .map(par -> par.split(":"))
-        .collect(Collectors.toMap(
-                par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
-                par -> Double.parseDouble(par[1])
-        ));
+        Map<Estudiante, Double> calificacionesObtenidas = new HashMap<>(); // Inicializa un mapa vacío
+
+        if (!datos[14].isEmpty()) { // Verifica si datos[14] no está vacío
+            calificacionesObtenidas = Arrays.stream(datos[14].split(";"))
+                .map(par -> par.split(":"))
+                .collect(Collectors.toMap(
+                    par -> new Estudiante("", "", par[0]),  // Crea Estudiante con solo correo
+                    par -> Double.parseDouble(par[1])      // Convierte la calificación a Double
+                ));
+        }
+        
         String nombreCreador = datos[15]; // No se usa en la creación del quiz porque ya se tiene el profesor
 
         Quiz quiz= new Quiz(descripcion, nivel, objetivo, duracion, version, fechaLimite, estadosPorEstudiante, obligatoria, listaPreguntas, calificacionMinima, creador, actividadesPreviasSugeridas, actividadesSeguimientoRecomendadas);

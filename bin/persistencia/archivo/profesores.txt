@@ -1,2 +1,5 @@
-PROFESOR,Juan,1234,juan@example.com
+PROFESOR,teacher1,abcd,teacher1@prof.com
 LEARNING_PATHS:
+LEARNING_PATH,good learning path
+ESTUDIANTES:
+FIN_PROFESOR

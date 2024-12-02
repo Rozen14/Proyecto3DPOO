@@ -216,7 +216,13 @@ public class Estudiante extends Usuario{
         }
         int totalActividades = learningPathActual.getListaActividades().size();
         int completadas = listaActividadesCompletadas.size();
-        return (float) completadas / totalActividades * 100;
+        float progreso = (float) completadas / totalActividades * 100;
+
+        learningPathActual.actualizarProgreso(this, progreso);  
+
+        return progreso;
+
+        // Invocar
     }
 
     public boolean tieneLearningPathAsignado() {

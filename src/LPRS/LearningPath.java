@@ -318,13 +318,28 @@ public class LearningPath {
         float p = (float) completadasObligatorias / totalObligatorias * 100;
         progreso.put(estudiante, p);
     
-        if (p == 100) {
+        if (p == 100.00) {
             setStatusParaEstudiante(estudiante, Status.Completado);
             // Agregar el Learning Path a la lista de Learning Paths completados del estudiante
             estudiante.agregarLearningPathCompletado(this);
+            // Quitar el Learning Path actual del estudiante
+            estudiante.setLearningPathActual(null);
         }
     
         return p;
+    }
+
+    public void actualizarProgreso(Estudiante estudiante, float progreso) {
+
+        this.progreso.put(estudiante, progreso);
+
+        if (progreso == 100.00) {
+            setStatusParaEstudiante(estudiante, Status.Completado);
+            // Agregar el Learning Path a la lista de Learning Paths completados del estudiante
+            estudiante.agregarLearningPathCompletado(this);
+            // Quitar el Learning Path actual del estudiante
+    
+        }
     }
     
     public float getProgresoParaEstudiante(Estudiante estudiante) {

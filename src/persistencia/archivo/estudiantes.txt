@@ -1,2 +1,3 @@
-ESTUDIANTE,Carlos,5678,carlos@example.com
+ESTUDIANTE,student1,5678,student1@student.com
 LEARNING_PATHS_COMPLETADOS:
+FIN_ESTUDIANTE

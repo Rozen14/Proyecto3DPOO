@@ -365,7 +365,11 @@ public class ConsolaProfesor implements Consola{
                 Nivel nivelLP = Nivel.valueOf(scanner.nextLine());
                 System.out.print("Ingrese el objetivo del Learning Path: ");
                 String objetivoLP = scanner.nextLine();
+                // Depuracion
+                System.out.println("Profesor en consola: " + profesor.getNombre());
                 profesor.crearLearningPath(titulo, nivelLP, descripcionLP, objetivoLP, duracionLP, 0, new ArrayList<>());
+                // Agregar el Learning Path a la lista de Learning Paths creados en la plataforma
+                plataforma.agregarLearningPath(profesor.getLearningPathCreado().get(profesor.getLearningPathCreado().size() - 1));
                 guardarCambios();
                 break;
             case "3":

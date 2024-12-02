@@ -18,6 +18,7 @@ public class Autenticacion {
         usuarios.put("admin1", Administrador.getAdmin());
         usuarios.put("teacher1", new Profesor("teacher1", "abcd", "teacher1@prof.com", new ArrayList<>(),  new ArrayList<>()));
         usuarios.put("student1", new Estudiante("student1", "5678", "student1@student.com"));
+    
     }
     
     public Usuario iniciarSesion(String nombreUsuario, String contrasenia){

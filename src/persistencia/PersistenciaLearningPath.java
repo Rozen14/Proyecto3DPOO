@@ -18,7 +18,7 @@ public class PersistenciaLearningPath // Esta clase se encarga de la persistenci
         archivo.getParentFile().mkdirs(); // Crear directorio "data" si no existe
 
         // Llamar directamente a `guardarEnArchivo` en LearningPath, pasándole el archivo
-        learningPath.guardarEnArchivo(archivo);
+        learningPath.guardarEnArchivo();
     }
 
     // Método para cargar todos los LearningPaths del archivo

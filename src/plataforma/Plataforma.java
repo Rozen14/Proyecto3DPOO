@@ -139,13 +139,14 @@ public class Plataforma {
     
 
     public void guardarDatos() {
-        guardarEstudiantes();
-        guardarProfesores();
         guardarLearningPaths();
+        guardarProfesores();
+        guardarEstudiantes();
+        
     }
 
     private void guardarEstudiantes() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("estudiantes.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/persistencia/archivo/estudiantes.txt"))) {
             for (Map.Entry<String, Estudiante> entry : estudiantes.entrySet()) {
                 Estudiante estudiante = entry.getValue();
                 writer.write("ESTUDIANTE," + estudiante.getNombre() + "," + estudiante.getContrasenia() + "," + estudiante.getCorreo());
@@ -165,7 +166,7 @@ public class Plataforma {
     }
 
     private void guardarProfesores() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("profesores.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/persistencia/archivo/profesores.txt"))) {
             for (Map.Entry<String, Profesor> entry : profesores.entrySet()) {
                 Profesor profesor = entry.getValue();
                 writer.write("PROFESOR," + profesor.getNombre() + "," + profesor.getContrasenia() + "," + profesor.getCorreo());
@@ -183,16 +184,34 @@ public class Plataforma {
 
     private void guardarLearningPaths() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(RUTA_LEARNING_PATHS, false))) {
-        for (LearningPath learningPath : learningPaths.values()) {
-            // Asegúrate de que cada LearningPath tenga un método toString o equivalente para serialización.
-            writer.write(learningPath.toString());
-            writer.newLine();
+            
+            for (LearningPath learningPath : learningPaths.values()) {
+                
+
+                System.out.println("Guardando Learning Path: " + learningPath.getTitulo());
+                // Mostrar datos del Learning Path
+                System.out.println("Título: " + learningPath.getTitulo());
+                System.out.println("Nivel: " + learningPath.getNivelDificultad());
+                System.out.println("Descripción: " + learningPath.getDescripcion());
+                System.out.println("Objetivos: " + learningPath.getObjetivos());
+                System.out.println("Duración: " + learningPath.getDuracionMinutos());
+                System.out.println("Fecha de creación: " + learningPath.getFechaCreacion());
+                System.out.println("Creador: " + learningPath.getCreador().getNombre());
+                System.out.println("Número de actividades: " + learningPath.getListaActividades().size());
+                System.out.println("Número de estudiantes inscritos: " + learningPath.getEstudiantesInscritos().size());
+                
+                // Verificar que no sea el hp learning path de prueba
+                if (!learningPath.getTitulo().equals("Learning Path de prueba")) {
+                    learningPath.guardarEnArchivo();
+                }
+                
+            }
+            System.out.println("Learning Paths guardados exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al guardar Learning Paths: " + e.getMessage());
         }
-        System.out.println("Learning Paths guardados exitosamente.");
-    } catch (IOException e) {
-        System.out.println("Error al guardar Learning Paths: " + e.getMessage());
     }
-    }
+    
     
 
 

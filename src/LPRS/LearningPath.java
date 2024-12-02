@@ -62,9 +62,9 @@ public class LearningPath {
         this.listaActividadesCompletadas = new HashMap<>();
 
         // Verificar si la lista de actividades no está vacía y si tiene al menos una actividad obligatoria
-        if (!listaActividades.isEmpty() && !tieneActividadObligatoria()) {
-            throw new IllegalArgumentException("El Learning Path debe tener al menos una actividad obligatoria.");
-        }
+        //if (!listaActividades.isEmpty() && !tieneActividadObligatoria()) {
+        //    throw new IllegalArgumentException("El Learning Path debe tener al menos una actividad obligatoria.");
+        //}
     }
 
 
@@ -351,7 +351,8 @@ public class LearningPath {
     // Persistencia de LearningPath en archivos de texto plano, dejamos esta parte del codigo aqui porque era más facil sacar los datos de los atributos de la clase LearningPath, la creacion de archivos en si se maneja en la clase PersistenciaLearningPath
 
     // Método para guardar el LearningPath en un archivo de texto plano
-    public void guardarEnArchivo(File archivo) throws IOException {
+    public void guardarEnArchivo() throws IOException {
+        File archivo = new File("src/persistencia/archivo/learningPaths.txt");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) { // BufferedWriter se utiliza para escribir texto en un archivo, FileWriter se utiliza para escribir caracteres en un archivo, y append = true para agregar texto al final del archivo
             // Guardar atributos básicos del LearningPath
             // Aqui el write esta guardando los atributos del LearningPath en el archivo de texto, se utiliza el metodo write para escribir texto en el archivo, y el metodo newLine para escribir una nueva linea en el archivo
@@ -364,7 +365,7 @@ public class LearningPath {
                          (this.fechaModificacion != null ? this.fechaModificacion.format(formatter) : "") + "," +
                          this.version + "," +
                          this.rating + "," +
-                         this.creador.getNombre());
+                         this.creador.getNombre()); 
             writer.newLine();
     
 

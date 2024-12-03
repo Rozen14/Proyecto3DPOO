@@ -1,5 +1,9 @@
 package usuario;
 import plataforma.*;
+import pregunta.Opcion;
+import pregunta.Pregunta;
+import pregunta.PreguntaAbierta;
+import pregunta.PreguntaCerrada;
 import actividad.*;
 import LPRS.LearningPath;
 import java.util.*;
@@ -236,40 +240,110 @@ public class Estudiante extends Usuario{
     }
     
     public void responderActividad(Actividad actividad, String respuesta) {
-        if (actividad == null) {
-            throw new IllegalArgumentException("La actividad no puede ser nula.");
-        }
-    
-        if (actividadActual == null || !actividadActual.equals(actividad)) {
-            throw new IllegalStateException("No puedes responder una actividad que no está en progreso.");
-        }
-    
-        if (actividad instanceof Tarea) {
-            // Responder a una tarea
-            ((Tarea) actividad).responder(this, respuesta);
-        } else if (actividad instanceof Quiz) {
-            // Responder a un quiz
-            ((Quiz) actividad).responder(this, respuesta);
-        } else if (actividad instanceof Examen) {
-            // Responder a un examen
-            ((Examen) actividad).responder(this, respuesta);
-        } else if (actividad instanceof Encuesta) {
-            // Responder a una encuesta
-            ((Encuesta) actividad).responder(this, respuesta);
-        } else if (actividad instanceof RecursoEducativo) {
-            System.out.println("Los recursos educativos no requieren una respuesta directa.");
-        } else {
-            throw new IllegalArgumentException("Tipo de actividad no reconocido.");
-        }
-    
-        // Actualizar el estado de la actividad
-        actividad.setStatusParaEstudiante(this, Status.Enviada);
-        listaActividadesCompletadas.add(actividad);
-        listaActividadesPorCompletar.remove(actividad);
-        actividadActual = null;
-    
-        System.out.println("Has completado la actividad: " + actividad.getDescripcion());
+    if (actividad == null) {
+        throw new IllegalArgumentException("La actividad no puede ser nula.");
     }
+
+    if (actividadActual == null || !actividadActual.equals(actividad)) {
+        throw new IllegalStateException("No puedes responder una actividad que no está en progreso.");
+    }
+
+    Scanner scanner = new Scanner(System.in);
+
+    if (actividad instanceof Quiz) {
+        Quiz quiz = (Quiz) actividad;
+
+        System.out.println("Preguntas del Quiz:");
+        List<PreguntaCerrada> preguntas = quiz.getListaPreguntas();
+
+        // Iterar y mostrar cada pregunta antes de solicitar respuesta
+        String respuestaO = "";
+        for (PreguntaCerrada pregunta : preguntas) {
+            System.out.println(pregunta.getEnunciado());
+            
+            System.out.println("Opciones brutas:");
+            System.out.println("A: " + pregunta.getOpcionA());
+            System.out.println("B: " + pregunta.getOpcionB());
+            System.out.println("C: " + pregunta.getOpcionC());
+            System.out.println("D: " + pregunta.getOpcionD());
+            
+            // Solicitar respuesta
+            System.out.print("Tu respuesta (A, B, C, D): ");
+            respuestaO = scanner.nextLine().toUpperCase();
+        }
+        // Pasar las respuestas al quiz
+        quiz.responder(this, respuestaO);
+    } else if (actividad instanceof Examen) {
+        Examen examen = (Examen) actividad;
+
+        System.out.println("Preguntas del Examen:");
+        List<Pregunta> preguntas = examen.getListaPreguntas();
+
+        // Iterar y mostrar cada pregunta antes de solicitar respuesta
+        List<String> respuestas = new ArrayList<>();
+        for (Pregunta pregunta : preguntas) {
+            System.out.println(pregunta.getEnunciado());
+
+            // Mostrar opciones si es una pregunta cerrada
+            if (pregunta instanceof PreguntaCerrada) {
+                PreguntaCerrada cerrada = (PreguntaCerrada) pregunta;
+                if (cerrada.getOpcionA() != null) {
+                    System.out.println("A: " + cerrada.getOpcionA().elements().nextElement());
+                }
+                if (cerrada.getOpcionB() != null) {
+                    System.out.println("B: " + cerrada.getOpcionB().elements().nextElement());
+                }
+                if (cerrada.getOpcionC() != null) {
+                    System.out.println("C: " + cerrada.getOpcionC().elements().nextElement());
+                }
+                if (cerrada.getOpcionD() != null) {
+                    System.out.println("D: " + cerrada.getOpcionD().elements().nextElement());
+                }
+            }
+
+            // Solicitar respuesta para cada pregunta
+            System.out.print("Tu respuesta: ");
+            String respuestaUsuario = scanner.nextLine();
+
+            // Enviar la respuesta al método responder
+            examen.responder(this, respuestaUsuario);
+        }
+    } else if (actividad instanceof Tarea) {
+        System.out.println("Descripción de la tarea: " + actividad.getDescripcion());
+        System.out.print("Ingresa tu respuesta: ");
+        String respuestaUsuario = scanner.nextLine();
+        ((Tarea) actividad).responder(this, respuestaUsuario);
+    } else if (actividad instanceof Encuesta) {
+        Encuesta encuesta = (Encuesta) actividad;
+
+        System.out.println("Preguntas de la Encuesta:");
+        List<PreguntaAbierta> preguntas = encuesta.getListaPreguntas();
+
+        // Iterar y mostrar cada pregunta antes de solicitar respuesta
+        List<String> respuestas = new ArrayList<>();
+        for (PreguntaAbierta pregunta : preguntas) {
+            System.out.println(pregunta.getEnunciado());
+            System.out.print("Tu respuesta: ");
+            String respuestaUsuario = scanner.nextLine();
+
+            // Enviar la respuesta al método responder
+            pregunta.setRespuestaEstudiante(respuestaUsuario);
+        }
+    } else if (actividad instanceof RecursoEducativo) {
+        System.out.println("Este es un recurso educativo y no requiere respuesta directa.");
+    } else {
+        throw new IllegalArgumentException("Tipo de actividad no reconocido.");
+    }
+
+    // Actualizar el estado de la actividad
+    actividad.setStatusParaEstudiante(this, Status.Enviada);
+    listaActividadesCompletadas.add(actividad);
+    listaActividadesPorCompletar.remove(actividad);
+    actividadActual = null;
+
+    System.out.println("Has completado la actividad: " + actividad.getDescripcion());
+}
+
     
 
 }

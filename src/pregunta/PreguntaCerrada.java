@@ -59,7 +59,7 @@ public class PreguntaCerrada extends Pregunta {
     public Dictionary<Opcion, String> getRespuesta() {
         return respuesta;
     }
-
+    
     public Dictionary<Opcion, String> getEscogida() {
         return escogida;
     }

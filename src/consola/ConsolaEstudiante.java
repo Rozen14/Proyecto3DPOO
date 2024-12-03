@@ -168,9 +168,7 @@ public class ConsolaEstudiante implements Consola {
                 try {
                     Actividad actividadSeleccionada = seleccionarActividad(estudiante, scanner);
                     if (actividadSeleccionada != null) {
-                        System.out.print("Ingresa tu respuesta: ");
-                        String respuesta = scanner.nextLine();
-                        estudiante.responderActividad(actividadSeleccionada, respuesta);
+                        estudiante.responderActividad(actividadSeleccionada, "");
                         guardarCambios();
                         System.out.println("¡Actividad respondida exitosamente!");
                     }

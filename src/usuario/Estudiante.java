@@ -287,20 +287,12 @@ public class Estudiante extends Usuario{
             // Mostrar opciones si es una pregunta cerrada
             if (pregunta instanceof PreguntaCerrada) {
                 PreguntaCerrada cerrada = (PreguntaCerrada) pregunta;
-                if (cerrada.getOpcionA() != null) {
-                    System.out.println("A: " + cerrada.getOpcionA().elements().nextElement());
-                }
-                if (cerrada.getOpcionB() != null) {
-                    System.out.println("B: " + cerrada.getOpcionB().elements().nextElement());
-                }
-                if (cerrada.getOpcionC() != null) {
-                    System.out.println("C: " + cerrada.getOpcionC().elements().nextElement());
-                }
-                if (cerrada.getOpcionD() != null) {
-                    System.out.println("D: " + cerrada.getOpcionD().elements().nextElement());
-                }
-            }
-
+                System.out.println("Opciones brutas:");
+                System.out.println("A: " + cerrada.getOpcionA());
+                System.out.println("B: " + cerrada.getOpcionB());
+                System.out.println("C: " + cerrada.getOpcionC());
+                System.out.println("D: " + cerrada.getOpcionD());
+            } 
             // Solicitar respuesta para cada pregunta
             System.out.print("Tu respuesta: ");
             String respuestaUsuario = scanner.nextLine();

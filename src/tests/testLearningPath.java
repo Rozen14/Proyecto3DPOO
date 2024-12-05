@@ -4,6 +4,8 @@ import actividad.*;
 import usuario.Estudiante;
 import usuario.Profesor;
 import LPRS.LearningPath;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -53,6 +55,18 @@ public class testLearningPath {
         // Inscribir estudiantes
 
         learningPath.inscripcionEstudiante(estudiante1);
+    }
+
+    @AfterEach
+
+    public void tearDown() {
+        learningPath = null;
+        profesor = null;
+        estudiante1 = null;
+        estudiante2 = null;
+        actividades = null;
+        actividad1 = null;
+        actividad2 = null;
     }
 
     

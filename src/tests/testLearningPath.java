@@ -306,7 +306,7 @@ public class testLearningPath {
     @Test
     public void testGuardarEnArchivo() throws IOException {
         File archivo = File.createTempFile("learningPathTest", ".txt");
-        learningPath.guardarEnArchivo(archivo);
+        learningPath.guardarEnArchivo();
 
         assertTrue(archivo.exists());
     }
@@ -320,7 +320,7 @@ public class testLearningPath {
         actividad2.inscripcionEstudiante(estudiante1);
 
         File archivo = new File("src/persistencia/archivo/PRUEBA_LP.txt"); // Se crea un archivo de texto para guardar los profesores
-        learningPath.guardarEnArchivo(archivo);
+        learningPath.guardarEnArchivo();
 
         LearningPath cargado = LearningPath.cargarDeArchivo(archivo, profesor);
 

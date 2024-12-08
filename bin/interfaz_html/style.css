@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background: #f4f4f4;
+}
+
+.view {
+    margin: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+form input, form select {
+    margin: 10px 0;
+    padding: 10px;
+    width: 80%;
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Learning Paths</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login y Registro -->
+    <div id="authContainer">
+        <!-- Login -->
+        <div id="loginView" class="view">
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Correo" required>
+                <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+            <button id="switchToRegister">Registrarse</button>
+        </div>
+
+        <!-- Registro -->
+        <div id="registerView" class="view hidden">
+            <h2>Registrarse</h2>
+            <form id="registerForm">
+                <input type="text" id="registerName" placeholder="Nombre" required>
+                <input type="email" id="registerEmail" placeholder="Correo" required>
+                <input type="password" id="registerPassword" placeholder="Contraseña" required>
+                <select id="registerRole" required>
+                    <option value="" disabled selected>Seleccionar rol</option>
+                    <option value="profesor">Profesor</option>
+                    <option value="estudiante">Estudiante</option>
+                </select>
+                <button type="submit">Registrarse</button>
+            </form>
+            <button id="switchToLogin">Iniciar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Vistas de Roles -->
+    <div id="roleContainer" class="hidden">
+        <!-- Vista Profesor -->
+        <div id="profesorView" class="view hidden">
+            <h2>Bienvenido, Profesor</h2>
+            <button id="createLearningPath">Crear Learning Path</button>
+            <div id="learningPathsList"></div>
+            <button id="logout">Cerrar Sesión</button>
+        </div>
+
+        <!-- Vista Estudiante -->
+        <div id="estudianteView" class="view hidden">
+            <h2>Bienvenido, Estudiante</h2>
+            <button id="viewLearningPaths">Ver Learning Paths</button>
+            
+            <div id="studentPathsList" class="view"></div>
+
+            <button id="logout">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

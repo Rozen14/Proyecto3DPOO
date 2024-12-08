@@ -57,6 +57,46 @@
 
             <button id="logout">Cerrar Sesión</button>
         </div>
+
+        <div id="create-activity-container" style="display: none;">
+            <h2>Crear Actividad</h2>
+            <form id="create-activity-form">
+                <!-- Campos básicos -->
+                <input type="text" id="nombreActividad" placeholder="Nombre de la actividad" required />
+                <textarea id="descripcionActividad" placeholder="Descripción de la actividad" required></textarea>
+                <select id="tipoActividad" required>
+                    <option value="" disabled selected>Seleccionar tipo de actividad</option>
+                    <option value="TAREA">Tarea</option>
+                    <option value="QUIZ">Quiz</option>
+                    <option value="EXAMEN">Examen</option>
+                    <option value="ENCUESTA">Encuesta</option>
+                    <option value="RECURSO_EDUCATIVO">Recurso Educativo</option>
+                </select>
+                <input type="number" id="duracionActividad" placeholder="Duración en minutos" required />
+                
+                <!-- Áreas dinámicas para cada tipo -->
+                <div id="quiz-fields" class="activity-fields" style="display: none;">
+                    <h3>Preguntas del Quiz</h3>
+                    <div id="quiz-questions"></div>
+                    <button type="button" onclick="addQuizQuestion()">Agregar Pregunta</button>
+                </div>
+        
+                <div id="encuesta-fields" class="activity-fields" style="display: none;">
+                    <h3>Preguntas Abiertas</h3>
+                    <div id="encuesta-questions"></div>
+                    <button type="button" onclick="addEncuestaQuestion()">Agregar Pregunta</button>
+                </div>
+        
+                <div id="recurso-fields" class="activity-fields" style="display: none;">
+                    <h3>Detalles del Recurso</h3>
+                    <input type="text" id="tipoRecurso" placeholder="Tipo de recurso (PDF, Video, etc.)" />
+                </div>
+        
+                <!-- Botón para guardar la actividad -->
+                <button type="submit">Guardar Actividad</button>
+            </form>
+        </div>
+        
     </div>
 
     <script src="app.js"></script>

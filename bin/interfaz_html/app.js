@@ -194,5 +194,92 @@ document.getElementById("createLearningPath").addEventListener("click", () => {
     usuarioActual.crearLearningPath(titulo, descripcion, nivel, objetivos, duracion);
 
     alert(`Learning Path "${titulo}" creado exitosamente.`);
+
+
+});
+
+// Manejar la selección del tipo de actividad
+document.getElementById("tipoActividad").addEventListener("change", (e) => {
+    const tipo = e.target.value;
+    document.querySelectorAll(".activity-fields").forEach((field) => (field.style.display = "none"));
+    if (tipo === "QUIZ") {
+        document.getElementById("quiz-fields").style.display = "block";
+    } else if (tipo === "ENCUESTA") {
+        document.getElementById("encuesta-fields").style.display = "block";
+    } else if (tipo === "RECURSO_EDUCATIVO") {
+        document.getElementById("recurso-fields").style.display = "block";
+    }
+});
+
+// Manejar la adición de preguntas para Quiz
+function addQuizQuestion() {
+    const container = document.getElementById("quiz-questions");
+    const questionHTML = `
+        <div class="quiz-question">
+            <input type="text" placeholder="Enunciado de la pregunta" required />
+            <input type="text" placeholder="Opción A" required />
+            <input type="text" placeholder="Opción B" required />
+            <input type="text" placeholder="Opción C" required />
+            <input type="text" placeholder="Opción D" required />
+            <select>
+                <option value="" disabled selected>Respuesta correcta</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+        </div>`;
+    container.insertAdjacentHTML("beforeend", questionHTML);
+}
+
+// Manejar la adición de preguntas abiertas para Encuesta
+function addEncuestaQuestion() {
+    const container = document.getElementById("encuesta-questions");
+    const questionHTML = `
+        <div class="encuesta-question">
+            <input type="text" placeholder="Enunciado de la pregunta abierta" required />
+        </div>`;
+    container.insertAdjacentHTML("beforeend", questionHTML);
+}
+
+// Manejar el guardado de actividades
+document.getElementById("create-activity-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById("nombreActividad").value;
+    const descripcion = document.getElementById("descripcionActividad").value;
+    const tipo = document.getElementById("tipoActividad").value;
+    const duracion = parseInt(document.getElementById("duracionActividad").value);
+
+    let actividad;
+
+    if (tipo === "QUIZ") {
+        const preguntas = Array.from(document.querySelectorAll("#quiz-questions .quiz-question")).map((q) => ({
+            enunciado: q.querySelector("input:nth-child(1)").value,
+            opciones: [
+                q.querySelector("input:nth-child(2)").value,
+                q.querySelector("input:nth-child(3)").value,
+                q.querySelector("input:nth-child(4)").value,
+                q.querySelector("input:nth-child(5)").value,
+            ],
+            respuesta: q.querySelector("select").value,
+        }));
+        actividad = { nombre, descripcion, tipo, duracion, preguntas };
+    } else if (tipo === "ENCUESTA") {
+        const preguntasAbiertas = Array.from(
+            document.querySelectorAll("#encuesta-questions .encuesta-question input")
+        ).map((q) => q.value);
+        actividad = { nombre, descripcion, tipo, duracion, preguntasAbiertas };
+    } else if (tipo === "RECURSO_EDUCATIVO") {
+        const tipoRecurso = document.getElementById("tipoRecurso").value;
+        actividad = { nombre, descripcion, tipo, duracion, tipoRecurso };
+    } else {
+        actividad = { nombre, descripcion, tipo, duracion };
+    }
+
+    console.log("Nueva actividad creada:", actividad);
+    alert(`Actividad "${nombre}" creada exitosamente.`);
+    document.getElementById("create-activity-form").reset();
+    document.querySelectorAll(".activity-fields").forEach((field) => (field.style.display = "none"));
 });
 

@@ -42,61 +42,60 @@
     <div id="roleContainer" class="hidden">
         <!-- Vista Profesor -->
         <div id="profesorView" class="view hidden">
-            <h2>Bienvenido, Profesor</h2>
-            <button id="createLearningPath">Crear Learning Path</button>
-            <div id="learningPathsList"></div>
-            <button id="logout">Cerrar Sesión</button>
-        </div>
+        <h2>Bienvenido, Profesor</h2>
+        <button id="createLearningPath">Crear Learning Path</button>
+        <button id="createActivity">Crear Actividad</button>
+        <div id="learningPathsList"></div>
+        <!-- Botones para evaluación -->
+        <button id="evaluateActivities">Evaluar Actividades</button>
+        <div id="activitiesList"></div>
+        <button id="viewGrades">Ver Calificaciones</button>
+        <button id="logout">Cerrar Sesión</button>
+    </div>
 
-        <!-- Vista Estudiante -->
-        <div id="estudianteView" class="view hidden">
-            <h2>Bienvenido, Estudiante</h2>
-            <button id="viewLearningPaths">Ver Learning Paths</button>
-            
-            <div id="studentPathsList" class="view"></div>
+    <!-- Vista Estudiante -->
+    <div id="estudianteView" class="view hidden">
+        <h2>Bienvenido, Estudiante</h2>
+        <button id="viewLearningPaths">Ver Learning Paths</button>
+        <button id="viewProgress">Ver Progreso</button>
+        <div id="studentPathsList" class="view"></div>
+        <button id="logout">Cerrar Sesión</button>
+    </div>
 
-            <button id="logout">Cerrar Sesión</button>
-        </div>
+    <!-- Crear Actividad -->
+    <div id="create-activity-container" style="display: none;">
+        <h2>Crear Actividad</h2>
+        <form id="create-activity-form">
+            <input type="text" id="nombreActividad" placeholder="Nombre de la actividad" required />
+            <textarea id="descripcionActividad" placeholder="Descripción de la actividad" required></textarea>
+            <select id="tipoActividad" required>
+                <option value="" disabled selected>Seleccionar tipo de actividad</option>
+                <option value="TAREA">Tarea</option>
+                <option value="QUIZ">Quiz</option>
+                <option value="EXAMEN">Examen</option>
+                <option value="ENCUESTA">Encuesta</option>
+                <option value="RECURSO_EDUCATIVO">Recurso Educativo</option>
+            </select>
+            <input type="number" id="duracionActividad" placeholder="Duración en minutos" required />
+            <div id="quiz-fields" class="activity-fields" style="display: none;">
+                <h3>Preguntas del Quiz</h3>
+                <div id="quiz-questions"></div>
+                <button type="button" onclick="addQuizQuestion()">Agregar Pregunta</button>
+            </div>
+            <div id="encuesta-fields" class="activity-fields" style="display: none;">
+                <h3>Preguntas Abiertas</h3>
+                <div id="encuesta-questions"></div>
+                <button type="button" onclick="addEncuestaQuestion()">Agregar Pregunta</button>
+            </div>
+            <button type="submit">Guardar Actividad</button>
+        </form>
+    </div>
 
-        <div id="create-activity-container" style="display: none;">
-            <h2>Crear Actividad</h2>
-            <form id="create-activity-form">
-                <!-- Campos básicos -->
-                <input type="text" id="nombreActividad" placeholder="Nombre de la actividad" required />
-                <textarea id="descripcionActividad" placeholder="Descripción de la actividad" required></textarea>
-                <select id="tipoActividad" required>
-                    <option value="" disabled selected>Seleccionar tipo de actividad</option>
-                    <option value="TAREA">Tarea</option>
-                    <option value="QUIZ">Quiz</option>
-                    <option value="EXAMEN">Examen</option>
-                    <option value="ENCUESTA">Encuesta</option>
-                    <option value="RECURSO_EDUCATIVO">Recurso Educativo</option>
-                </select>
-                <input type="number" id="duracionActividad" placeholder="Duración en minutos" required />
-                
-                <!-- Áreas dinámicas para cada tipo -->
-                <div id="quiz-fields" class="activity-fields" style="display: none;">
-                    <h3>Preguntas del Quiz</h3>
-                    <div id="quiz-questions"></div>
-                    <button type="button" onclick="addQuizQuestion()">Agregar Pregunta</button>
-                </div>
-        
-                <div id="encuesta-fields" class="activity-fields" style="display: none;">
-                    <h3>Preguntas Abiertas</h3>
-                    <div id="encuesta-questions"></div>
-                    <button type="button" onclick="addEncuestaQuestion()">Agregar Pregunta</button>
-                </div>
-        
-                <div id="recurso-fields" class="activity-fields" style="display: none;">
-                    <h3>Detalles del Recurso</h3>
-                    <input type="text" id="tipoRecurso" placeholder="Tipo de recurso (PDF, Video, etc.)" />
-                </div>
-        
-                <!-- Botón para guardar la actividad -->
-                <button type="submit">Guardar Actividad</button>
-            </form>
+        <!-- Área de visualización de actividades creadas -->
+        <div id="activities-list-container" style="display: none;">
+            <h2>Actividades Creadas</h2>
+            <div id="activities-list"></div>
         </div>
-        
     </div>
 
     <script src="app.js"></script>

@@ -1,7 +1,7 @@
 // Simulación de Base de Datos
 const usuarios = [];
 const learningPaths = [];
-
+const actividades = [];
 let usuarioActual = null;
 
 // Clases
@@ -141,6 +141,28 @@ document.getElementById("viewLearningPaths").addEventListener("click", () => {
     });
 });
 
+function verActividades(index) {
+    const selectedLP = learningPaths[index];
+    const studentPathsList = document.getElementById("studentPathsList");
+
+    if (selectedLP.actividades.length === 0) {
+        studentPathsList.innerHTML = "<p>No hay actividades disponibles en este Learning Path.</p>";
+        return;
+    }
+
+    studentPathsList.innerHTML = `<h3>Actividades en ${selectedLP.titulo}</h3>`;
+    selectedLP.actividades.forEach((act) => {
+        const actElement = document.createElement("div");
+        actElement.innerHTML = `
+            <h4>${act.nombre}</h4>
+            <p>${act.descripcion}</p>
+            <p><strong>Duración:</strong> ${act.duracion} minutos</p>
+            <p><strong>Tipo:</strong> ${act.tipo}</p>
+        `;
+        studentPathsList.appendChild(actElement);
+    });
+}
+
 // Inscribir estudiante en un Learning Path
 function inscribirseEnLearningPath(index) {
     const selectedLP = learningPaths[index];
@@ -270,16 +292,164 @@ document.getElementById("create-activity-form").addEventListener("submit", (e) =
             document.querySelectorAll("#encuesta-questions .encuesta-question input")
         ).map((q) => q.value);
         actividad = { nombre, descripcion, tipo, duracion, preguntasAbiertas };
-    } else if (tipo === "RECURSO_EDUCATIVO") {
-        const tipoRecurso = document.getElementById("tipoRecurso").value;
-        actividad = { nombre, descripcion, tipo, duracion, tipoRecurso };
     } else {
         actividad = { nombre, descripcion, tipo, duracion };
     }
 
-    console.log("Nueva actividad creada:", actividad);
-    alert(`Actividad "${nombre}" creada exitosamente.`);
-    document.getElementById("create-activity-form").reset();
+    const lpName = prompt("Ingrese el nombre del Learning Path para asociar la actividad:");
+    const selectedLP = learningPaths.find((lp) => lp.titulo === lpName);
+
+    if (selectedLP) {
+        selectedLP.actividades.push(actividad);
+        alert(`Actividad "${nombre}" creada y asociada al Learning Path "${lpName}".`);
+    } else {
+        alert("Learning Path no encontrado.");
+    }
+
+    e.target.reset();
     document.querySelectorAll(".activity-fields").forEach((field) => (field.style.display = "none"));
+    document.getElementById("create-activity-container").style.display = "none";
 });
 
+
+
+selectedLP.actividades.forEach((act) => {
+    const actElement = document.createElement("div");
+    actElement.innerHTML = `
+        <h4>${act.nombre}</h4>
+        <p>${act.descripcion}</p>
+        <p><strong>Duración:</strong> ${act.duracion} minutos</p>
+        <p><strong>Tipo:</strong> ${act.tipo}</p>
+        <button onclick="completarActividad(${index}, '${act.nombre}')">Marcar como completada</button>
+    `;
+    studentPathsList.appendChild(actElement);
+});
+
+function completarActividad(lpIndex, actName) {
+    const selectedLP = learningPaths[lpIndex];
+    const actividad = selectedLP.actividades.find((act) => act.nombre === actName);
+    alert(`¡Actividad "${actividad.nombre}" completada!`);
+}
+
+const evaluaciones = {
+    // Estructura: 
+    // "LearningPathTitle": {
+    //     "ActividadNombre": {
+    //         "emailEstudiante": calificacion
+    //     }
+    // }
+};
+
+function evaluarActividad(lpTitle, actividadIndex) {
+    const learningPath = learningPaths.find((lp) => lp.titulo === lpTitle);
+    const actividad = learningPath.actividades[actividadIndex];
+
+    const estudianteEmail = prompt("Ingrese el correo del estudiante:");
+    const estudiante = learningPath.estudiantes.find((e) => e.correo === estudianteEmail);
+
+    if (!estudiante) {
+        alert("Estudiante no encontrado.");
+        return;
+    }
+
+    const calificacion = parseFloat(prompt(`Ingrese la calificación para ${actividad.nombre}:`));
+
+    if (isNaN(calificacion) || calificacion < 0 || calificacion > 100) {
+        alert("Calificación inválida.");
+        return;
+    }
+
+    if (!evaluaciones[lpTitle]) {
+        evaluaciones[lpTitle] = {};
+    }
+    if (!evaluaciones[lpTitle][actividad.nombre]) {
+        evaluaciones[lpTitle][actividad.nombre] = {};
+    }
+    evaluaciones[lpTitle][actividad.nombre][estudianteEmail] = calificacion;
+
+    alert(`Calificación registrada para ${actividad.nombre}.`);
+}
+
+
+function verCalificaciones(lpTitle) {
+    const resultados = [];
+
+    if (!evaluaciones[lpTitle]) {
+        alert("No hay calificaciones registradas.");
+        return;
+    }
+
+    for (const [actividad, estudiantes] of Object.entries(evaluaciones[lpTitle])) {
+        resultados.push(`Actividad: ${actividad}`);
+        for (const [email, calificacion] of Object.entries(estudiantes)) {
+            resultados.push(`- ${email}: ${calificacion}`);
+        }
+    }
+
+    alert(`Calificaciones para ${lpTitle}:\n${resultados.join("\n")}`);
+}
+
+
+const progresoEstudiantes = {
+    // Estructura: "emailEstudiante": { "LearningPathTitle": { "ActividadNombre": "Estado" } }
+};
+
+function actualizarProgreso(estudianteCorreo, lpTitle, actividadNombre, estado) {
+    if (!progresoEstudiantes[estudianteCorreo]) {
+        progresoEstudiantes[estudianteCorreo] = {};
+    }
+
+    if (!progresoEstudiantes[estudianteCorreo][lpTitle]) {
+        progresoEstudiantes[estudianteCorreo][lpTitle] = {};
+    }
+
+    progresoEstudiantes[estudianteCorreo][lpTitle][actividadNombre] = estado;
+}
+
+function obtenerProgreso(estudianteCorreo, lpTitle) {
+    if (!progresoEstudiantes[estudianteCorreo] || !progresoEstudiantes[estudianteCorreo][lpTitle]) {
+        return {};
+    }
+    return progresoEstudiantes[estudianteCorreo][lpTitle];
+}
+
+function completarActividad(lpIndex, actName) {
+    const selectedLP = learningPaths[lpIndex];
+    const actividad = selectedLP.actividades.find((act) => act.nombre === actName);
+
+    if (!actividad) {
+        alert("Actividad no encontrada.");
+        return;
+    }
+
+    // Actualizar progreso en la estructura externa
+    actualizarProgreso(usuarioActual.correo, selectedLP.titulo, actName, "Completada");
+
+    alert(`¡Actividad "${actividad.nombre}" completada!`);
+    mostrarProgreso(); // Actualizar la vista del progreso
+}
+
+function mostrarProgreso() {
+    const progresoContainer = document.getElementById("studentPathsList");
+    progresoContainer.innerHTML = "";
+
+    learningPaths.forEach((lp) => {
+        if (lp.estudiantes.includes(usuarioActual)) {
+            const progreso = obtenerProgreso(usuarioActual.correo, lp.titulo);
+            let progresoHTML = "<ul>";
+
+            lp.actividades.forEach((actividad) => {
+                const estado = progreso[actividad.nombre] || "No comenzada";
+                progresoHTML += `<li>${actividad.nombre}: ${estado}</li>`;
+            });
+
+            progresoHTML += "</ul>";
+
+            const lpElement = document.createElement("div");
+            lpElement.innerHTML = `<h3>${lp.titulo}</h3>${progresoHTML}`;
+            progresoContainer.appendChild(lpElement);
+        }
+    });
+}
+
+document.getElementById("viewProgress").addEventListener("click", mostrarProgreso);

@@ -44,6 +44,7 @@ public abstract class Actividad { // Clase abstracta Actividad
         this.objetivo=objetivo;
         this.duracionEsperada = duracionEsperada;
         this.version = version;
+        this.calificaciones = {};
 
         if (fechaLimite.isBefore(this.fechaInicio)) {
             throw new IllegalArgumentException("La fecha límite no puede ser anterior a la fecha de inicio.");
